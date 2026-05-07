@@ -1,0 +1,44 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Blog-Karte (Template, Start- & Blog-Seite)
+  Projekt-Pfad: components/blog-card.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<article class="card blog-card blog-card--feature">
+  <a class="card-hitbox" href="./blog.html?post={{slug}}" aria-label="{{title}}"></a>
+  <div class="blog-card__media">
+    <div class="thumb-wrap">
+      <img class="card-image" src="{{image}}" alt="{{title}}" loading="lazy" />
+      <span class="blog-image-gradient" aria-hidden="true"></span>
+      <span class="blog-card__recap-pill">{{recapBadge}}</span>
+    </div>
+  </div>
+  <div class="card-body blog-card__body">
+    <div class="blog-card-meta">
+      <p class="card-date blog-card__date" title="{{absoluteDate}}">{{absoluteDate}}</p>
+      <span class="blog-readtime">{{readTime}}</span>
+    </div>
+    <h3>{{title}}</h3>
+    <p class="blog-teaser">{{teaser}}</p>
+    <div class="card-actions">
+      <a class="btn btn-ghost" href="./blog.html?post={{slug}}">{{readMore}}</a>
+    </div>
+  </div>
+</article>

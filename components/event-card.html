@@ -1,0 +1,45 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Event-Karte (Template, Events-Seite)
+  Projekt-Pfad: components/event-card.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<article class="card event-card event-card--modern{{pastClass}}{{nextClass}}">
+  <a class="card-hitbox" href="{{detailUrl}}" aria-label="{{title}}"></a>
+  <div class="event-card__media">
+    <img class="event-card__image" src="{{image}}" alt="{{title}}" loading="lazy" />
+    <div class="event-card__date-badge" aria-hidden="true">
+      <span class="event-card__date-day">{{dateBadgeDay}}</span>
+      <span class="event-card__date-month">{{dateBadgeMonth}}</span>
+    </div>
+    {{statusBadgeHtml}}
+  </div>
+  <div class="card-body event-card__body">
+    <p class="event-card__datetime">{{date}}</p>
+    <h3>{{title}}</h3>
+    <p class="event-card__desc">{{description}}</p>
+    {{countdownBlock}}
+    {{addressBlock}}
+    <div class="card-actions">
+      <a class="btn btn-ghost" href="{{detailUrl}}">{{buttonText}}</a>
+      <a class="btn btn-primary" href="{{registerUrl}}" target="_blank" rel="noopener noreferrer">{{registerText}}</a>
+    </div>
+  </div>
+</article>

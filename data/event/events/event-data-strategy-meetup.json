@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · Netzwerkabend Datenstrategie",
+    "pathInProject": "data/event/events/event-data-strategy-meetup.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 4,
+  "date": "2026-05-11T18:00:00",
+  "image": "./assets/images/event-4.svg",
+  "link": "https://example.com/event-4",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken",
+      "en": "IHK Mainfranken"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "Netzwerkabend Datenstrategie",
+    "en": "Data Strategy Meetup"
+  },
+  "detail": {
+    "description": {
+      "de": "Austausch zu Datenbasis und Governance als KI-Fundament.",
+      "en": "Exchange on data governance as AI foundation."
+    },
+    "content": {
+      "de": "## Warum Datenstrategie?\n\nPragmatische Governance-Ansätze für den Mittelstand.",
+      "en": "## Why data strategy?\n\nPragmatic governance patterns for mid-sized companies."
+    }
+  }
+}

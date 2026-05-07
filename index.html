@@ -1,0 +1,185 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Startseite (Home)
+  Projekt-Pfad: index.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ki Netzwerk Schweinfurt</title>
+    <meta
+      name="description"
+      content="Ki Netzwerk Schweinfurt verbindet Unternehmen, Bildung und Verwaltung rund um praxisnahe Künstliche Intelligenz."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <script defer src="./assets/js/i18n.js"></script>
+    <script defer src="./assets/js/main.js"></script>
+  </head>
+  <body data-page="home">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="hero container fade-in" id="hero">
+        <div class="hero-content">
+          <p class="eyebrow" data-i18n="home.heroLabel"></p>
+          <h1 data-i18n="home.heroTitle"></h1>
+          <p class="hero-text" data-i18n="home.heroText"></p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="./events.html" data-i18n="home.heroCtaPrimary"></a>
+            <a class="btn btn-ghost" href="#mission" data-i18n="home.heroCtaSecondary"></a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-hidden="true">
+          <div class="hero-panel-content">
+            <span class="hero-chip" data-i18n="home.heroStatus"></span>
+            <h2 data-i18n="home.heroPanelTitle"></h2>
+            <p data-i18n="home.heroPanelText"></p>
+            <div class="hero-network-visual">
+              <canvas id="network-canvas" width="360" height="260"></canvas>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="home-section container fade-in" id="upcoming-events">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow" data-i18n="home.nextEventsLabel"></p>
+            <h2 data-i18n="home.nextEvents"></h2>
+            <p class="section-copy" data-i18n="home.nextEventsIntro"></p>
+          </div>
+          <a class="link" href="./events.html" data-i18n="common.showAll"></a>
+        </div>
+        <div id="next-events" class="events-cards events-cards--home"></div>
+      </section>
+
+      <section class="home-section container fade-in" id="recaps">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow" data-i18n="home.recapLabel"></p>
+            <h2 data-i18n="home.recapTitle"></h2>
+            <p class="section-copy" data-i18n="home.recapIntro"></p>
+          </div>
+          <a class="link" href="./blog.html" data-i18n="common.showAll"></a>
+        </div>
+        <div id="latest-posts" class="blog-cards-grid"></div>
+      </section>
+
+      <section class="home-section container fade-in" id="mission">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow" data-i18n="home.missionLabel"></p>
+            <h2 data-i18n="home.missionTitle"></h2>
+            <p class="section-copy" data-i18n="home.missionIntro"></p>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card fade-in">
+            <h3 data-i18n="home.feature1Title"></h3>
+            <p data-i18n="home.feature1Text"></p>
+          </article>
+          <article class="feature-card fade-in">
+            <h3 data-i18n="home.feature2Title"></h3>
+            <p data-i18n="home.feature2Text"></p>
+          </article>
+          <article class="feature-card fade-in">
+            <h3 data-i18n="home.feature3Title"></h3>
+            <p data-i18n="home.feature3Text"></p>
+          </article>
+          <article class="feature-card fade-in">
+            <h3 data-i18n="home.feature4Title"></h3>
+            <p data-i18n="home.feature4Text"></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-section container fade-in" id="faq">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow" data-i18n="home.faqLabel"></p>
+            <h2 data-i18n="home.faqTitle"></h2>
+            <p class="section-copy" data-i18n="home.faqIntro"></p>
+          </div>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-1">
+              <span data-i18n="faq.q1.question"></span>
+              <span class="faq-toggle-icon" aria-hidden="true"></span>
+            </button>
+            <div id="faq-1" class="faq-answer" hidden>
+              <p data-i18n="faq.q1.answer"></p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-2">
+              <span data-i18n="faq.q2.question"></span>
+              <span class="faq-toggle-icon" aria-hidden="true"></span>
+            </button>
+            <div id="faq-2" class="faq-answer" hidden>
+              <p data-i18n="faq.q2.answer"></p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-3">
+              <span data-i18n="faq.q3.question"></span>
+              <span class="faq-toggle-icon" aria-hidden="true"></span>
+            </button>
+            <div id="faq-3" class="faq-answer" hidden>
+              <p data-i18n="faq.q3.answer"></p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-4">
+              <span data-i18n="faq.q4.question"></span>
+              <span class="faq-toggle-icon" aria-hidden="true"></span>
+            </button>
+            <div id="faq-4" class="faq-answer" hidden>
+              <p data-i18n="faq.q4.answer"></p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-section container fade-in" id="contact">
+        <div class="cta-panel">
+          <p class="eyebrow" data-i18n="home.ctaLabel"></p>
+          <h2 data-i18n="home.ctaTitle"></h2>
+          <p class="cta-text" data-i18n="home.ctaText"></p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="mailto:info@ki-netzwerk-schweinfurt.de" data-i18n="home.ctaButton"></a>
+            <a class="btn btn-ghost" href="./events.html" data-i18n="home.ctaSecondary"></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

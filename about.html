@@ -1,0 +1,77 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Über uns
+  Projekt-Pfad: about.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Über uns | Ki Netzwerk Schweinfurt</title>
+    <meta
+      name="description"
+      content="Ki Netzwerk Schweinfurt: Treffen, Zielgruppe und Partner der Initiative für KI in der Region."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <script defer src="./assets/js/i18n.js"></script>
+    <script defer src="./assets/js/main.js"></script>
+  </head>
+  <body data-page="about">
+    <div id="site-header"></div>
+
+    <main class="page-main about-page container">
+      <header class="about-hero fade-in">
+        <p class="about-eyebrow" id="about-eyebrow"></p>
+        <h1 class="about-title" id="about-title"></h1>
+        <p class="about-subtitle" id="about-subtitle"></p>
+        <p class="about-intro" id="about-intro"></p>
+      </header>
+
+      <section class="about-panel fade-in" aria-labelledby="about-meeting-title">
+        <h2 class="about-panel__title" id="about-meeting-title"></h2>
+        <p class="about-panel__lead" id="about-meeting-lead"></p>
+        <div class="about-prose" id="about-meeting-body"></div>
+      </section>
+
+      <section class="about-panel about-panel--accent fade-in" aria-labelledby="about-participants-title">
+        <h2 class="about-panel__title" id="about-participants-title"></h2>
+        <p class="about-panel__lead" id="about-participants-lead"></p>
+        <div id="about-participant-chips" class="about-chip-row"></div>
+        <p class="about-panel__closing" id="about-participants-closing"></p>
+      </section>
+
+      <section class="about-panel about-panel--partners fade-in" aria-labelledby="about-partners-title">
+        <h2 class="about-panel__title" id="about-partners-title"></h2>
+        <p class="about-panel__text" id="about-partners-text"></p>
+        <div id="about-partner-chips" class="about-chip-row about-chip-row--muted"></div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

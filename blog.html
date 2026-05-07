@@ -1,0 +1,68 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Blog
+  Projekt-Pfad: blog.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog | Ki Netzwerk Schweinfurt</title>
+    <meta name="description" content="Blogbeiträge des Ki Netzwerk Schweinfurt" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <script defer src="./assets/js/i18n.js"></script>
+    <script defer src="./assets/js/main.js"></script>
+  </head>
+  <body data-page="blog">
+    <div id="site-header"></div>
+
+    <main class="page-main container">
+      <header class="page-head fade-in">
+        <h1 data-i18n="blog.title"></h1>
+        <p data-i18n="blog.subtitle"></p>
+      </header>
+
+      <section id="blog-list-view" class="fade-in">
+        <div id="blog-list" class="blog-cards-grid"></div>
+      </section>
+
+      <article id="blog-detail-view" class="blog-detail hidden fade-in">
+        <a class="link" href="./blog.html" data-i18n="blog.detail.backToList"></a>
+        <header class="blog-detail-head">
+          <h2 id="blog-detail-title"></h2>
+          <p id="blog-detail-date"></p>
+          <p id="blog-detail-readtime" class="blog-detail-readtime hidden"></p>
+        </header>
+        <img id="blog-detail-image" class="blog-detail-image hidden" alt="" />
+        <div id="blog-detail-content" class="markdown-content"></div>
+      </article>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

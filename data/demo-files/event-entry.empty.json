@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Vorlage · Leerer Event-Datensatz",
+    "pathInProject": "data/demo-files/event-entry.empty.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": "",
+  "date": "",
+  "image": "",
+  "link": "",
+  "recapLink": "",
+  "location": {
+    "venue": {
+      "de": "",
+      "en": ""
+    },
+    "street": "",
+    "postalCode": "",
+    "city": ""
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "",
+    "en": ""
+  },
+  "detail": {
+    "description": {
+      "de": "",
+      "en": ""
+    },
+    "content": {
+      "de": "",
+      "en": ""
+    }
+  }
+}

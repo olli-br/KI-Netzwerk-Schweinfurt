@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · KI in der Praxis",
+    "pathInProject": "data/event/events/event-ai-in-practice.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 1,
+  "date": "2026-06-15T18:00:00",
+  "image": "./assets/images/event-1.svg",
+  "link": "https://example.com/event-1",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken",
+      "en": "IHK Mainfranken"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "KI in der Praxis",
+    "en": "AI in Practice"
+  },
+  "detail": {
+    "description": {
+      "de": "Einführung in praktische KI-Anwendungen für Unternehmen.",
+      "en": "Introduction to practical AI use cases for companies."
+    },
+    "content": {
+      "de": "## Was dich erwartet\n\nKonkrete Beispiele von der Idee bis zum Pilotbetrieb.",
+      "en": "## What to expect\n\nConcrete examples from idea to pilot."
+    }
+  }
+}

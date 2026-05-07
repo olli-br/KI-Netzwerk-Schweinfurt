@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · Impulsvortrag: KI & Datenschutz",
+    "pathInProject": "data/event/events/event-privacy-talk.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 6,
+  "date": "2026-03-18T19:00:00",
+  "image": "./assets/images/event-4.svg",
+  "link": "https://example.com/event-dsgvo",
+  "recapLink": "https://example.com/recap-dsgvo",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken, Konferenzbereich",
+      "en": "IHK Mainfranken, conference area"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "Impulsvortrag: KI & Datenschutz",
+    "en": "Lightning talk: AI & privacy"
+  },
+  "detail": {
+    "description": {
+      "de": "Kurzer Abend mit Rechtsgrundlagen und Checkliste für Pilotprojekte im Mittelstand.",
+      "en": "Short evening on legal basics and a checklist for SMB pilots."
+    },
+    "content": {
+      "de": "## Inhalt\n\nPraxisnahe Leitlinien zu Datenschutz bei KI-Piloten.",
+      "en": "## Agenda\n\nPractical guidelines for privacy in AI pilots."
+    }
+  }
+}

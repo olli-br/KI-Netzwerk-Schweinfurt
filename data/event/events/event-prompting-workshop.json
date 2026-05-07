@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · Prompting Workshop",
+    "pathInProject": "data/event/events/event-prompting-workshop.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 2,
+  "date": "2026-07-03T17:30:00",
+  "image": "./assets/images/event-2.svg",
+  "link": "https://example.com/event-2",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken",
+      "en": "IHK Mainfranken"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "Prompting Workshop",
+    "en": "Prompting Workshop"
+  },
+  "detail": {
+    "description": {
+      "de": "Hands-on Session zu effektiven Prompts für Teams.",
+      "en": "Hands-on session for better team prompting."
+    },
+    "content": {
+      "de": "## Fokus\n\nÜbungen zu Struktur, Rollen und iterativer Prompt-Verbesserung.",
+      "en": "## Focus\n\nExercises for structure, role prompts and iterative refinement."
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Startseite · Seiteninhalte",
+    "pathInProject": "data/start/start-page.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "heroLabel": {
+    "de": "Initiative für KI in Mainfranken",
+    "en": "AI initiative in Schweinfurt"
+  },
+  "heroTitle": {
+    "de": "Ki Netzwerk Schweinfurt",
+    "en": "AI Network Schweinfurt"
+  },
+  "heroText": {
+    "de": "Wir vernetzen Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe Künstliche Intelligenz. Mit offenen Treffen, Workshops und Erfahrungsberichten schaffen wir einen Raum für Austausch, konkrete Projekte und nachhaltigen Wissenstransfer in der Region Schweinfurt.",
+    "en": "We connect companies, education, public institutions and the local community around practical Artificial Intelligence. Through open meetups, workshops and experience sharing, we create space for collaboration, real projects and sustainable knowledge transfer in the Schweinfurt region."
+  },
+  "nextEvents": {
+    "de": "Nächste Events",
+    "en": "Upcoming events"
+  },
+  "nextEventBar": {
+    "de": "Nächstes Event:",
+    "en": "Next event:"
+  },
+  "calendarPrev": {
+    "de": "Vorheriger Monat",
+    "en": "Previous month"
+  },
+  "calendarNext": {
+    "de": "Nächster Monat",
+    "en": "Next month"
+  },
+  "latestPosts": {
+    "de": "Neueste Blogbeiträge",
+    "en": "Latest blog posts"
+  },
+  "galleryTitle": {
+    "de": "Einblicke",
+    "en": "Insights"
+  }
+}

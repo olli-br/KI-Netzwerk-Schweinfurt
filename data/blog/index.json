@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Blog · Beitrags-Index (Dateiliste)",
+    "pathInProject": "data/blog/index.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "files": [
+    "post-erstes-treffen.json",
+    "post-ki-im-mittelstand.json",
+    "post-test.json"
+  ]
+}

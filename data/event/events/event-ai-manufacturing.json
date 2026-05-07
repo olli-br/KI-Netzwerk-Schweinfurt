@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · KI & Produktion",
+    "pathInProject": "data/event/events/event-ai-manufacturing.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 3,
+  "date": "2026-07-26T18:30:00",
+  "image": "./assets/images/event-3.svg",
+  "link": "https://example.com/event-3",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken",
+      "en": "IHK Mainfranken"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "KI & Produktion",
+    "en": "AI & Manufacturing"
+  },
+  "detail": {
+    "description": {
+      "de": "Best Practices für KI im industriellen Umfeld.",
+      "en": "Best practices for AI in industrial environments."
+    },
+    "content": {
+      "de": "## Themen\n\nQualitätsinspektion, Instandhaltung und IT/OT-Anbindung.",
+      "en": "## Topics\n\nQuality inspection, maintenance and IT/OT integration."
+    }
+  }
+}

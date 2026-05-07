@@ -1,0 +1,73 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Header & Navigation (HTML-Partial)
+  Projekt-Pfad: components/header.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo logo-with-network" href="./index.html">
+      <span class="logo-network" aria-hidden="true">
+        <canvas id="header-network-canvas" width="88" height="56"></canvas>
+      </span>
+      <span class="logo-text">Ki Netzwerk <span class="logo-accent">Schweinfurt</span></span>
+    </a>
+    <div class="header-actions">
+      <nav class="nav" id="site-nav" aria-label="Hauptnavigation">
+        <a data-nav="home" href="./index.html" data-i18n="nav.home"></a>
+        <a data-nav="events" href="./events.html" data-i18n="nav.events"></a>
+        <a data-nav="blog" href="./blog.html" data-i18n="nav.blog"></a>
+        <a data-nav="about" href="./about.html" data-i18n="nav.about"></a>
+        <div class="nav-drawer-tools" aria-label="Sprache und Erscheinungsbild">
+          <div class="lang-switch nav-lang-switch lang-switch--drawer" role="group" aria-label="Sprachauswahl">
+            <button type="button" data-lang="de" class="lang-btn">DE</button>
+            <button type="button" data-lang="en" class="lang-btn">EN</button>
+          </div>
+          <button type="button" class="theme-toggle theme-toggle-split" aria-pressed="false">
+            <span class="theme-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </nav>
+      <div class="header-end" aria-label="Sprache, Erscheinungsbild, Menü">
+        <div class="toolbar-tools-desktop">
+          <div class="lang-switch nav-lang-switch lang-switch--toolbar" role="group" aria-label="Sprachauswahl">
+            <button type="button" data-lang="de" class="lang-btn">DE</button>
+            <button type="button" data-lang="en" class="lang-btn">EN</button>
+          </div>
+          <button type="button" class="theme-toggle theme-toggle-split" aria-pressed="false">
+            <span class="theme-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="Menü öffnen"
+          aria-controls="site-nav"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

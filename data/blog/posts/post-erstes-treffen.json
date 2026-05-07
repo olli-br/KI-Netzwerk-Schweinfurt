@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Blogbeitrag · Erstes Treffen",
+    "pathInProject": "data/blog/posts/post-erstes-treffen.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": "erstes-treffen",
+  "slug": "erstes-treffen",
+  "date": "2026-04-27T10:00:00",
+  "image": "./assets/images/meeting2.png",
+  "title": {
+    "de": "Erstes Treffen",
+    "en": "First Meetup"
+  },
+  "teaser": {
+    "de": "Rückblick auf den offiziellen Start des Ki Netzwerks: welche Themen direkt auf dem Tisch lagen, welche Fragen besonders häufig gestellt wurden und welche Formate sich die Community für die kommenden Monate wünscht.",
+    "en": "Recap of the official AI network launch, including the topics discussed first, the questions that came up most often, and the meetup formats the community wants for the next months."
+  },
+  "readTime": {
+    "de": "2 Min Lesezeit",
+    "en": "2 min read"
+  },
+  "detail": {
+    "content": {
+      "de": "# Willkommen im Netzwerk\n\nUnser erstes Treffen hat gezeigt, wie groß das Interesse an praxisnaher KI in der Region ist.\n\n## Was passiert ist\n\nNach einer kurzen Vorstellung der Initiative haben wir gemeinsam gesammelt, wo Unternehmen aktuell mit KI stehen: von ersten Experimenten bis zu bereits laufenden Pilotprojekten.\n\nBesonders spannend war der Austausch zwischen technischen und nicht-technischen Rollen. Dadurch konnten wir konkrete Hürden benennen, zum Beispiel fehlende Datenqualität, unklare Verantwortlichkeiten oder Unsicherheit bei Datenschutzfragen.\n\n## Wichtigste Learnings\n\n- Kleine, klar abgegrenzte Use Cases helfen beim Einstieg.\n- Datenaufbereitung kostet oft mehr Zeit als das Modell selbst.\n- Interdisziplinäre Teams sorgen für bessere Ergebnisse.\n\n## Stimmen aus dem Abend\n\nMehrere Teilnehmende haben berichtet, dass intern oft weniger die Technik als vielmehr Zeit, Priorisierung und Kommunikation die größten Bremsen sind. Besonders hilfreich war daher der offene Austausch über Dinge, die in Projekten nicht sofort funktionieren.\n\nGleichzeitig wurde deutlich, dass viele Teams schon heute gute Grundlagen besitzen - etwa Prozesswissen, domänenspezifische Daten oder motivierte Fachbereiche. Mit klarer Struktur können daraus schnell erste belastbare Ergebnisse entstehen.\n\n## Nächste Schritte\n\nFür die nächsten Treffen priorisieren wir praxisnahe Formate: kurze Impulsvorträge, offene Q&A-Runden und Sessions mit echten Beispielprozessen aus dem Mittelstand.\n\nZusätzlich planen wir ein wiederkehrendes \"Projektfenster\", in dem Teams ihren aktuellen Stand in fünf Minuten vorstellen können. Ziel ist, voneinander zu lernen und typische Stolpersteine schneller gemeinsam zu lösen.",
+      "en": "# Welcome to the network\n\nOur first meetup showed strong demand for practical AI across the region.\n\n## What happened\n\nAfter a short introduction to the initiative, we mapped where companies currently stand with AI: from first experiments to active pilot projects.\n\nA key highlight was the exchange between technical and non-technical roles. This helped us identify concrete blockers, including data quality gaps, unclear ownership and uncertainty around privacy requirements.\n\n## Key takeaways\n\n- Small, well-scoped use cases are best for getting started.\n- Data preparation often takes more effort than model work.\n- Cross-functional teams create better outcomes.\n\n## Voices from the meetup\n\nSeveral participants noted that internal constraints are often less about technology and more about time, prioritization and communication. This is why open discussion about what does *not* work immediately was considered especially valuable.\n\nAt the same time, many teams already have strong foundations today - process know-how, domain-specific data and motivated business units. With clear structure, these foundations can quickly produce meaningful results.\n\n## Next steps\n\nFor the upcoming sessions we prioritize practical formats: short impulses, open Q&A and walkthroughs based on real SME processes.\n\nWe also plan a recurring \"project window\" where teams can present their current status in five minutes, helping everyone learn faster from real project friction."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Blogbeitrag · KI im Mittelstand",
+    "pathInProject": "data/blog/posts/post-ki-im-mittelstand.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": "ki-im-mittelstand",
+  "slug": "ki-im-mittelstand",
+  "date": "2026-04-08T09:00:00",
+  "image": "./assets/images/meeting1.png",
+  "title": {
+    "de": "KI im Mittelstand",
+    "en": "AI for SMBs"
+  },
+  "teaser": {
+    "de": "Wie kleine und mittlere Unternehmen KI-Projekte strukturiert starten können - von der Auswahl eines sinnvollen Use Cases über die Datenbasis bis zur Entscheidung, wann ein Pilot in den Betrieb überführt werden sollte.",
+    "en": "How small and mid-sized companies can launch AI projects in a structured way, from selecting a meaningful use case and preparing data to deciding when a pilot is ready for operations."
+  },
+  "readTime": {
+    "de": "2 Min Lesezeit",
+    "en": "2 min read"
+  },
+  "detail": {
+    "content": {
+      "de": "# KI realistisch starten\n\nViele Unternehmen fragen sich, wie sie mit KI beginnen sollen.\n\n## Die häufigsten Startfehler\n\nIn Gesprächen mit Teams aus Produktion, Vertrieb und Verwaltung sehen wir immer wieder ähnliche Muster: zu große Ziele am Anfang, fehlende Datengrundlage und unklare Verantwortlichkeiten.\n\nStatt mit einem \"KI-Mega-Projekt\" zu starten, ist ein klar abgegrenzter Anwendungsfall oft erfolgreicher. Wichtig ist, den erwarteten Nutzen messbar zu machen - zum Beispiel Zeitersparnis, geringere Fehlerquote oder schnellere Reaktionszeiten.\n\n## Ein praxistauglicher Ablauf\n\n1. Problem präzise beschreiben.\n2. Verfügbare Datenqualität prüfen.\n3. Pilot mit klaren Erfolgskriterien definieren.\n4. Fachbereich und IT gemeinsam in den Test nehmen.\n5. Früh entscheiden: einstellen, anpassen oder skalieren.\n\n## Was in der Praxis oft hilft\n\nViele Unternehmen kommen schneller voran, wenn sie zu Beginn ein kleines Kernteam bilden: Fachbereich, IT und eine Person mit klarer Entscheidungsbefugnis. So werden Rückfragen schneller geklärt und das Projekt verliert sich nicht in Endlosschleifen.\n\nEbenso wichtig ist ein realistischer Erwartungsrahmen. Ein Pilot muss nicht perfekt sein - er muss zeigen, ob Nutzen, Daten und Prozess zusammenpassen. Genau diese Klarheit spart später Zeit und Budget.\n\n## Fazit\n\nKI im Mittelstand funktioniert am besten, wenn sie nah am echten Prozess bleibt und nicht als isoliertes IT-Thema betrachtet wird.\n\nWer mit messbaren Zielen startet, offen über Risiken spricht und früh Feedback aus dem Alltag einholt, schafft die besten Voraussetzungen für skalierbare Ergebnisse.",
+      "en": "# Starting AI realistically\n\nMany companies ask how to begin with AI.\n\n## Common startup mistakes\n\nAcross manufacturing, sales and administration teams, we repeatedly see the same patterns: goals are too broad, data foundations are weak, and ownership is unclear.\n\nInstead of beginning with a large AI transformation project, a focused use case is usually more effective. Define measurable value early, such as time savings, lower error rates or faster response times.\n\n## A practical rollout flow\n\n1. Describe the business problem precisely.\n2. Assess available data quality.\n3. Define a pilot with explicit success criteria.\n4. Test jointly with business and IT.\n5. Decide early: stop, adapt or scale.\n\n## What often helps in practice\n\nMany teams move faster when they start with a small core group: business owner, IT counterpart and one person with clear decision authority. This avoids long decision loops and keeps execution grounded.\n\nIt is equally important to set realistic expectations. A pilot does not need to be perfect - it must prove whether value, data and process fit together. That clarity saves time and budget later.\n\n## Conclusion\n\nAI works best in SMB contexts when it is tightly connected to real processes and not treated as an isolated IT topic.\n\nTeams that start with measurable goals, discuss risks openly and gather early feedback from day-to-day operations create the strongest path to scale."
+    }
+  }
+}

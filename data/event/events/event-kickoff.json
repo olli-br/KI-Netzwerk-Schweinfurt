@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Event · Kick-off Ki Netzwerk",
+    "pathInProject": "data/event/events/event-kickoff.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": 5,
+  "date": "2026-02-05T18:00:00",
+  "image": "./assets/images/event-3.svg",
+  "link": "https://example.com/event-kickoff",
+  "recapLink": "https://example.com/recap-kickoff",
+  "location": {
+    "venue": {
+      "de": "IHK für Mainfranken, Veranstaltungsraum",
+      "en": "IHK Mainfranken, event room"
+    },
+    "street": "Rückertstraße 9",
+    "postalCode": "97421",
+    "city": "Schweinfurt"
+  },
+  "geo": {
+    "lat": 50.0451,
+    "lng": 10.2338
+  },
+  "title": {
+    "de": "Kick-off Ki Netzwerk",
+    "en": "AI Network Kick-off"
+  },
+  "detail": {
+    "description": {
+      "de": "Erstes öffentliches Treffen: Vorstellung der Initiative und Abstimmung der Themen für 2026.",
+      "en": "First public meetup: presenting the initiative and collecting topics for 2026."
+    },
+    "content": {
+      "de": "## Rückblick\n\nBeim Kick-off haben wir Ziele und Themen gesammelt.\n\n- Praxisnahe KI\n- Datenqualität\n- Rechtliche Einordnung",
+      "en": "## Recap\n\nAt the kick-off we aligned on goals and priorities.\n\n- Practical AI\n- Data quality\n- Legal basics"
+    }
+  }
+}

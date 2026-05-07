@@ -1,0 +1,109 @@
+<!--
+  ============================================================================
+  Project:      Ki Netzwerk Schweinfurt
+  Seite:        Events
+  Projekt-Pfad: events.html
+  Description:  Offizielle Website des Ki Netzwerks Schweinfurt – Vernetzung von
+                Unternehmen, Bildung, Verwaltung und Community rund um praxisnahe KI
+                in der Region Mainfranken.
+
+  Developed by: Oliver Braun
+  GitHub:       https://github.com/olli-br
+
+  Development Start: April 2026
+  Current Version:   0.1.0 (Beta)
+
+  Update History:
+  - 02.05.2026  [Oliver Braun]   Project initialization
+
+  This project was independently developed and coded by me.
+  Feel free to learn from the code, but please keep the attribution.
+  ============================================================================
+-->
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events | Ki Netzwerk Schweinfurt</title>
+    <meta name="description" content="Alle Events des Ki Netzwerk Schweinfurt" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <script defer src="./assets/js/i18n.js"></script>
+    <script defer src="./assets/js/main.js"></script>
+  </head>
+  <body data-page="events">
+    <div id="site-header"></div>
+
+    <main class="page-main container">
+      <header class="page-head fade-in">
+        <h1 data-i18n="events.title"></h1>
+        <p data-i18n="events.subtitle"></p>
+      </header>
+
+      <section id="events-list-view" class="stack fade-in">
+        <div class="toolbar toolbar--events">
+          <label for="event-filter" data-i18n="events.filterLabel"></label>
+          <input id="event-filter" type="search" placeholder="Suchbegriff..." />
+        </div>
+        <div id="events-list" class="events-cards"></div>
+      </section>
+
+      <article id="event-detail-view" class="event-detail hidden fade-in">
+        <a class="link" href="./events.html" data-i18n="events.detail.backToList"></a>
+        <img id="event-detail-image" class="event-detail-image" alt="" />
+        <header class="event-detail-head">
+          <div class="event-detail-meta">
+            <p id="event-detail-date" class="card-date"></p>
+            <span id="event-detail-status" class="event-status-badge hidden"></span>
+          </div>
+          <h2 id="event-detail-title"></h2>
+          <div id="event-detail-countdown" class="event-detail-countdown hidden" aria-live="polite"></div>
+        </header>
+        <p id="event-detail-description" class="event-detail-lead"></p>
+        <section id="event-detail-location-section" class="event-location-section hidden" aria-labelledby="event-detail-location-heading">
+          <h3 id="event-detail-location-heading" class="event-location-section__title"></h3>
+          <address id="event-detail-address" class="event-detail-address"></address>
+          <div id="event-detail-map-wrap" class="event-map-wrap hidden">
+            <p class="event-map-hint" id="event-detail-map-hint"></p>
+            <div class="event-map-aspect">
+              <iframe
+                id="event-detail-map-frame"
+                class="event-map-iframe"
+                title=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src=""
+              ></iframe>
+              <a id="event-detail-map-hit" class="event-map-hit" href="#" target="_blank" rel="noopener noreferrer">
+                <span class="event-map-hit__label"></span>
+              </a>
+            </div>
+            <div class="event-map-external">
+              <a id="event-detail-map-google" class="btn btn-ghost btn--sm" href="#" target="_blank" rel="noopener noreferrer"></a>
+              <a id="event-detail-map-apple" class="btn btn-ghost btn--sm" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+          </div>
+        </section>
+        <div id="event-detail-body" class="markdown-content event-detail-body hidden"></div>
+        <div class="event-detail-actions">
+          <a
+            id="event-detail-link"
+            class="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="events.detail.register"
+          ></a>
+        </div>
+      </article>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

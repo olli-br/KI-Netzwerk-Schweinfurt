@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Blog · UI-Texte & Labels",
+    "pathInProject": "data/blog/blog-page.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "title": {
+    "de": "Rückblicke & Impulse",
+    "en": "Recaps & insights"
+  },
+  "subtitle": {
+    "de": "Bildstarke Rückblicke aus unseren Treffen sowie Impulse und Wissen aus dem Netzwerk.",
+    "en": "Visual recaps from our meetups plus insights and knowledge from the network."
+  },
+  "list": {
+    "readMore": {
+      "de": "Weiterlesen",
+      "en": "Read more"
+    },
+    "readTime": {
+      "de": "Min Lesezeit",
+      "en": "min read"
+    },
+    "recapBadge": {
+      "de": "Rückblick",
+      "en": "Recap"
+    }
+  },
+  "detail": {
+    "backToList": {
+      "de": "Zurück zur Übersicht",
+      "en": "Back to overview"
+    }
+  }
+}

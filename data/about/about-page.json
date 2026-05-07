@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Über uns · Seiteninhalte",
+    "pathInProject": "data/about/about-page.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "eyebrow": {
+    "de": "Gemeinschaft · Praxis · Region",
+    "en": "Community · Practice · Region"
+  },
+  "title": {
+    "de": "Über uns",
+    "en": "About us"
+  },
+  "subtitle": {
+    "de": "Das Ki Netzwerk Schweinfurt verbindet Menschen, die Künstliche Intelligenz nicht nur diskutieren, sondern in Alltag, Betrieb und Verwaltung anwenden wollen.",
+    "en": "The AI Network Schweinfurt connects people who want to apply Artificial Intelligence in daily work, business and public service—not only discuss it."
+  },
+  "intro": {
+    "de": "Wir sind eine offene Initiative aus der Region Mainfranken. Unser Fokus liegt auf vertrauensvollem Austausch, ehrlichen Erfahrungsberichten und konkreten nächsten Schritten—von der ersten Idee bis zum Pilotprojekt.",
+    "en": "We are an open initiative from the Mainfranken region. We focus on trusted exchange, honest lessons learned and concrete next steps—from the first idea to a pilot project."
+  },
+  "meetingTitle": {
+    "de": "So laufen unsere Treffen",
+    "en": "How our meetups work"
+  },
+  "meetingLead": {
+    "de": "Regelmäßig treffen wir uns in lockerer Atmosphäre—abends oder nachmittags, meist in zentraler Lage in Schweinfurt. Jede Session hat ein klares Thema, bleibt aber genug Raum für Fragen und Diskussion.",
+    "en": "We meet regularly in a relaxed setting—often evenings or afternoons, usually at a central venue in Schweinfurt. Each session has a clear topic, with enough room for questions and discussion."
+  },
+  "meetingBody": {
+    "de": "Typischer Ablauf: Kurze Begrüßung und Vorstellung des Abends, dann ein Impuls—z. B. Vortrag, Lightning Talk oder Erfahrungsbericht aus der Praxis. Im Anschluss folgen offene Fragerunden, thematische Tische oder Hands-on-Übungen, je nach Format.\n\nZwischen den Programmpunkten ist Zeit für Kaffee, Snacks und vor allem für Gespräche neben der Bühne. Wer möchte, kann Projekte, Stellenanzeigen oder Aufrufe kurz vorstellen; wir moderieren die Zeit fair.\n\nDu musst kein Experte sein: Neugier und Respekt reichen. Inhalte werden, wenn möglich, so gewählt, dass Einsteigerinnen und Fortgeschrittene etwas mitnehmen—von Grundlagen über Datenschutz bis zu MLOps und Produktions-KI.",
+    "en": "Typical flow: a short welcome and outline, then an impulse—talk, lightning talk or a practitioner story. After that we run open Q&A, themed tables or hands-on exercises, depending on the format.\n\nBetween segments there is time for coffee, snacks and especially hallway conversations. Anyone may briefly pitch a project, role or call for collaboration; we keep time fair.\n\nYou do not need to be an expert: curiosity and respect are enough. We aim for content that works for newcomers and advanced practitioners alike—from basics and privacy to MLOps and AI in production."
+  },
+  "participantsTitle": {
+    "de": "Wer mit dabei ist",
+    "en": "Who joins us"
+  },
+  "participantsLead": {
+    "de": "Das Netzwerk lebt von Vielfalt. Wir freuen uns über alle, die KI verantwortungsvoll weiterdenken und ausprobieren wollen—unabhängig von Branche, Unternehmensgröße oder beruflichem Hintergrund.",
+    "en": "The network thrives on diversity. We welcome everyone who wants to explore AI thoughtfully and responsibly—across industries, company sizes and professional backgrounds."
+  },
+  "participantChips": [
+    { "de": "Führungskräfte & Teamleitungen", "en": "Leaders & team leads" },
+    { "de": "IT, Daten & Softwareentwicklung", "en": "IT, data & software engineering" },
+    { "de": "Produktion, Qualität & Instandhaltung", "en": "Production, quality & maintenance" },
+    { "de": "Marketing, Produkt & Innovation", "en": "Marketing, product & innovation" },
+    { "de": "Verwaltung & öffentlicher Dienst", "en": "Public administration & civil service" },
+    { "de": "Studierende, Forschung & Lehre", "en": "Students, research & teaching" },
+    { "de": "Beraterinnen, Gründer*innen & Selbstständige", "en": "Consultants, founders & freelancers" },
+    { "de": "Alle, die einfach neugierig sind", "en": "Anyone who is simply curious" }
+  ],
+  "participantsClosing": {
+    "de": "Ob du erste Schritte planst oder bereits Projekte skalierst: Du findest Gleichgesinnte, Sparringspartner und oft den einen Tipp, der weiterhilft. Der Eintritt zu unseren öffentlichen Formaten ist in der Regel frei oder wird transparent kommuniziert.",
+    "en": "Whether you are planning first steps or already scaling projects—you will find peers, sparring partners and often the one tip that moves you forward. Public formats are usually free or clearly communicated."
+  },
+  "partnersTitle": {
+    "de": "Partner & Unterstützer",
+    "en": "Partners & supporters"
+  },
+  "partnersText": {
+    "de": "Partner ermöglichen Räume, Technik, Catering oder Sichtbarkeit und stärken den Transfer zwischen Wissenschaft, Wirtschaft und Zivilgesellschaft. Wir danken allen, die die Initiative mittragen.",
+    "en": "Partners provide venues, tech, catering or visibility and strengthen transfer between science, business and civil society. We thank everyone who supports the initiative."
+  },
+  "partnerChips": [
+    { "de": "Partner A", "en": "Partner A" },
+    { "de": "Partner B", "en": "Partner B" },
+    { "de": "Partner C", "en": "Partner C" }
+  ]
+}

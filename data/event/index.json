@@ -1,0 +1,26 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Events · Termin-Index (Dateiliste)",
+    "pathInProject": "data/event/index.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "files": [
+    "event-kickoff.json",
+    "event-privacy-talk.json",
+    "event-ai-in-practice.json",
+    "event-prompting-workshop.json",
+    "event-ai-manufacturing.json",
+    "event-data-strategy-meetup.json"
+  ]
+}

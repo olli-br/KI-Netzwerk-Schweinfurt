@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Blogbeitrag · Test Blog",
+    "pathInProject": "data/blog/posts/post-test.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "id": "Test Blog",
+  "slug": "Test",
+  "date": "2026-05-30T10:00:00",
+  "image": "./assets/images/meeting3.png",
+  "title": {
+    "de": "Erster Blog",
+    "en": "First Blog"
+  },
+  "teaser": {
+    "de": "Ein ausführlicher Testbeitrag für Layout und Lesefluss: wir prüfen, wie längere Teaser und strukturierte Abschnitte auf Startseite, Blog-Liste und Detailansicht wirken.",
+    "en": "A detailed test post for layout and reading flow, used to validate how longer teasers and structured sections render on the homepage, blog list and detail page."
+  },
+  "readTime": {
+    "de": "8 Min Lesezeit",
+    "en": "8 min read"
+  },
+  "detail": {
+    "content": {
+      "de": "# Testbeitrag mit erweitertem Inhalt\n\nDieser Beitrag dient als praxisnahe Referenz für längere Blogtexte, die in mehreren Abschnitten, mit Zwischenüberschriften und Zusatzinformationen aufbereitet sind. Er ist so gestaltet, dass er auf Startseite, Blog-Liste und Detailseite gleichermaßen gut funktioniert.\n\n## Warum dieser Beitrag länger ist\n\nWir erweitern den Text bewusst, um die Wirkung von längeren Artikeln zu testen. Dabei geht es nicht nur um die Anzahl der Wörter, sondern um den Nutzen: Leser sollen mehr Kontext erhalten, besser verstehen, worum es geht, und gleichzeitig nicht überfordert werden.\n\n## Längere Inhalte sinnvoll strukturieren\n\nLängere Beiträge profitieren von klaren Zwischenüberschriften, kurzen Einleitungen in jedem Abschnitt und praktischen Beispielen. Auf Mobilgeräten sind gut lesbare Abschnitte mit 3-5 Sätzen ideal. Zusätzlich helfen Listen, Zitate und empfehlende Hinweise dabei, die Aufmerksamkeit zu halten.\n\n## Lesefluss und Teaser-Verhältnis\n\nDer Teaser wird bewusst etwas länger gehalten, damit der Einstieg stärker wirkt. Auf der Startseite soll er schnell zeigen, worum es im Beitrag geht, ohne den gesamten Text vorwegzunehmen. Das erhöht die Chance, dass Leser auf die Detailseite wechseln.\n\n## Testszenarien im Blog-Workflow\n\n- Auf der Homepage prüfen wir, ob der Teaser in der Kartenansicht noch gut wirkt.\n- In der Blog-Übersicht beobachten wir, ob der Beitrag als ansprechend und vollständig wahrgenommen wird.\n- In der Detailansicht kontrollieren wir, ob der Inhalt auf langen Geräten und auf Smartphones stabil bleibt.\n\n## Ergebnisse und Beobachtungen\n\nEs zeigt sich, dass längere Inhalte dann am besten funktionieren, wenn sie klar gegliedert sind. Abschnitte, die zu lang oder zu dicht sind, werden seltener gelesen. Dagegen sorgen Teilüberschriften und Hervorhebungen für mehr Orientierung.\n\n## Fazit: Mehr inhaltlicher Mehrwert\n\nDer Beitrag ist nicht nur länger geworden, sondern auch zielgerichteter: Er liefert konkrete Hinweise zur Strukturierung von Blogbeiträgen und zeigt, wie mehr Inhalt gleichzeitig übersichtlicher bleibt. Dieser Ansatz macht den Testbeitrag wirklich brauchbar für echte Artikel im Blog.\n\n## Ausblick\n\nFür künftige Testtexte empfehlen wir, gezielt Beispiele, Erfahrungswerte und Empfehlungen einzubauen. So entsteht nicht nur ein Längen-Test, sondern ein Beitrag, der Leser tatsächlich weiterbringt und den Anspruch des Netzwerks an Qualität spiegelt.",
+      "en": "# Test post with extended content\n\nThis article is designed as a practical reference for longer blog posts that are structured with multiple sections, subheadings, and additional context. It is crafted to work well on the homepage, blog list, and detail page.\n\n## Why this post is longer\n\nWe intentionally extend the content to test how longer articles behave. The goal is not only more words, but more value: readers should gain clearer context, understand the purpose faster, and still feel comfortable reading.\n\n## Structuring longer content effectively\n\nLonger posts benefit from clear subheadings, brief introductions for each section, and practical examples. On mobile devices, short paragraphs of three to five sentences are ideal. Lists, callouts, and helpful guidance keep attention focused.\n\n## Readability and teaser balance\n\nThe teaser is intentionally longer so the article has a stronger entrance. On the homepage it should quickly communicate the core idea without revealing the whole story. This increases the chance that readers click through to the detail page.\n\n## Blog workflow testing scenarios\n\n- On the homepage we check whether the teaser still performs well in the card view.\n- In the blog overview we observe whether the post feels complete and appealing.\n- In the detail view we verify stability on long screens and smartphones.\n\n## Results and observations\n\nWe find that longer content works best when it is clearly structured. Sections that are too long or too dense are read less often. In contrast, subheadings and emphasis provide better orientation.\n\n## Conclusion: More meaningful content\n\nThe post is not only longer, but also more purposeful: it delivers concrete guidance on structuring blog posts and shows how additional content can remain easy to digest. This makes the test post genuinely useful for real blog articles.\n\n## Outlook\n\nFor future test posts, we recommend adding examples, experience-based insights, and practical tips. That way the article becomes more than a length test — it becomes a piece of content that truly helps readers and reflects the network's quality standards."
+    }
+  }
+}

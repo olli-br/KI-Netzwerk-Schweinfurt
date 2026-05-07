@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "project": "Ki Netzwerk Schweinfurt",
+    "pageName": "Events · UI-Texte & Labels",
+    "pathInProject": "data/event/events-page.json",
+    "developedBy": "Oliver Braun",
+    "github": "https://github.com/olli-br",
+    "developmentStart": "2026-04",
+    "currentVersion": "0.1.0",
+    "updateHistory": [
+      {
+        "date": "2026-05-02",
+        "author": "[Oliver Braun]",
+        "changes": "Project initialization"
+      }
+    ]
+  },
+  "title": {
+    "de": "Alle Termine im Überblick",
+    "en": "Meetups and dates at a glance"
+  },
+  "subtitle": {
+    "de": "Netzwerktreffen, Workshops und öffentliche Formate – mit Filter, Details und Anmeldung.",
+    "en": "Network meetups, workshops and public formats — filter, details and registration in one place."
+  },
+  "filterLabel": {
+    "de": "Filtern",
+    "en": "Filter"
+  },
+  "filterPlaceholder": {
+    "de": "Suchbegriff eingeben...",
+    "en": "Enter search term..."
+  },
+  "detail": {
+    "backToList": {
+      "de": "Zurück zur Event-Übersicht",
+      "en": "Back to event overview"
+    },
+    "pastBadge": {
+      "de": "Vergangen",
+      "en": "Past"
+    },
+    "nextBadge": {
+      "de": "Nächstes Event",
+      "en": "Next event"
+    },
+    "archiveLink": {
+      "de": "Recap",
+      "en": "Recap"
+    },
+    "details": {
+      "de": "Details ansehen",
+      "en": "View details"
+    },
+    "register": {
+      "de": "Zur Anmeldung",
+      "en": "Register now"
+    },
+    "locationHeading": {
+      "de": "Treffpunkt",
+      "en": "Venue"
+    },
+    "openGoogleMaps": {
+      "de": "In Google Maps öffnen",
+      "en": "Open in Google Maps"
+    },
+    "openAppleMaps": {
+      "de": "In Apple Maps öffnen",
+      "en": "Open in Apple Maps"
+    },
+    "mapHint": {
+      "de": "Karte antippen, um die Wegbeschreibung in Ihrer Maps-App zu öffnen.",
+      "en": "Tap the map to open directions in your maps app."
+    },
+    "mapFrameTitle": {
+      "de": "Interaktive Karte",
+      "en": "Interactive map"
+    }
+  }
+}
