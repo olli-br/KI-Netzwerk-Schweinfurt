@@ -17,7 +17,7 @@
   - 02.05.2026  [Oliver Braun]   Project initialization
   - 08.05.2026  [Oliver Braun]   Polish responsive UI and layout consistency, including updated JSON content structure and Markdown-based content handling.
   - 09.05.2026  [Oliver Braun]   Markdown rendering and mobile UX polish.
-  - 09.05.2026  [Oliver Braun]   UI-Feinschliff: Layout, Mobile/Safari, KI-Chat & WebLLM.
+  - 10.05.2026  [Oliver Braun]   Responsive layout, mobile/Safari, and WebLLM chat polish; browser language and system theme defaults (early head script); light-mode header and safe-area scrolling; viewport CSS variables for main height; live-on-request site context for the assistant.
 
   This project was independently developed and coded by me.
   Feel free to learn from the code, but please keep the attribution.
@@ -28,6 +28,34 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (function () {
+        var lk = "kins-language";
+        var storedLang = localStorage.getItem(lk);
+        function pickLang() {
+          if (storedLang === "de" || storedLang === "en") return storedLang;
+          var list =
+            typeof navigator.languages !== "undefined" && navigator.languages.length
+              ? Array.prototype.slice.call(navigator.languages)
+              : [navigator.language || ""];
+          for (var i = 0; i < list.length; i++) {
+            var t = String(list[i]).toLowerCase();
+            if (t.indexOf("de") === 0) return "de";
+            if (t.indexOf("en") === 0) return "en";
+          }
+          return "de";
+        }
+        document.documentElement.lang = pickLang();
+        var tk = "kins-theme";
+        var storedTheme = localStorage.getItem(tk);
+        if (storedTheme !== "light" && storedTheme !== "dark" && window.matchMedia) {
+          document.documentElement.style.colorScheme = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+      })();
+    </script>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content"

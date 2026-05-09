@@ -17,6 +17,10 @@
   - 08.05.2026  [Oliver Braun]   Add local WebLLM chat assistant.
   - 09.05.2026  [Oliver Braun]   Markdown rendering and mobile UX polish.
   - 09.05.2026  [Oliver Braun]   UI-Feinschliff: Layout, Mobile/Safari, KI-Chat & WebLLM.
+  - 10.05.2026  [Oliver Braun]   Hellmodus-Header und scroll-padding inkl. Safe Area.
+  - 10.05.2026  [Oliver Braun]   KI-Chat: gleiche Schriftgröße Nachrichten und Eingabefeld.
+  - 10.05.2026  [Oliver Braun]   KI-Chat: etwas kleinere Schrift auf schmalen Screens (≤560px).
+  - 10.05.2026  [Oliver Braun]   `main`-Mindesthöhe an sichtbaren Viewport (`--layout-viewport-height`).
 
   Independently developed by me.
   ============================================================================
@@ -157,7 +161,7 @@ body.theme-light {
 
 html {
   min-height: 100%;
-  scroll-padding-top: calc(var(--header-height) + 1rem);
+  scroll-padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0px) + 1rem);
   -webkit-text-size-adjust: 100%;
   /* Wie theme-color / Seitengrund --bg (Safari-Chrome + Overscroll) */
   background-color: var(--bg);
@@ -171,7 +175,7 @@ body {
   margin: 0;
   min-height: 100dvh;
   padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.55rem);
   font-family: var(--font-sans);
   font-feature-settings: "kern" 1, "liga" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
@@ -197,6 +201,14 @@ body.theme-light {
     linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   background-attachment: fixed;
   background-color: var(--bg);
+}
+
+/* Inhaltsspalte: Höhe an sichtbaren Viewport (visualViewport) minus fixe Kopfzeile & Safe Areas */
+body > main {
+  min-height: calc(
+    var(--layout-viewport-height, 100dvh) - var(--header-height) - env(safe-area-inset-top, 0px) -
+      env(safe-area-inset-bottom, 0px) - 0.75rem
+  );
 }
 
 @layer reset {
@@ -1424,7 +1436,10 @@ body.theme-light .event-map-hit {
 }
 
 body.theme-light .site-header {
-  background: color-mix(in srgb, #ffffff 80%, rgb(255 255 255 / 0));
+  /* Undurchsichtiger als im Dunkelmodus: sonst wirkt die Leiste unter iOS/Safari „schwebend“ neben Statusleiste und Dynamic Island. */
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .header-inner {
@@ -3596,6 +3611,12 @@ body.theme-light .hero-network-visual {
   color: var(--danger-fg);
 }
 
+/* Nachrichten und Eingabe: dieselbe CSS-Variable; Touch unten mit max(16px) für beide. */
+.ai-chat-panel :where(.ai-chat-message, .ai-chat-form textarea) {
+  font-size: var(--ai-chat-copy-size, clamp(0.875rem, 0.76rem + 0.28vw, 0.96rem));
+  line-height: var(--ai-chat-copy-lh, 1.45);
+}
+
 .ai-chat-message {
   position: relative;
   width: fit-content;
@@ -3604,8 +3625,6 @@ body.theme-light .hero-network-visual {
   border: 1px solid var(--border);
   border-radius: 0.95rem;
   color: var(--text);
-  font-size: var(--ai-chat-copy-size, clamp(0.875rem, 0.76rem + 0.28vw, 0.96rem));
-  line-height: var(--ai-chat-copy-lh, 1.45);
   font-weight: 400;
   text-align: left;
   white-space: normal;
@@ -3701,16 +3720,21 @@ body.theme-light .hero-network-visual {
   color: var(--text);
   padding: 0.72rem 0.78rem 0.72rem 0.95rem;
   font-family: inherit;
-  font-size: var(--ai-chat-copy-size, clamp(0.875rem, 0.76rem + 0.28vw, 0.96rem));
-  line-height: var(--ai-chat-copy-lh, 1.45);
   font-weight: 400;
   letter-spacing: inherit;
   -webkit-text-size-adjust: 100%;
 }
 
-/* Touch: mind. 16px in Formularfeldern verhindert iOS-Zoom beim Fokus */
+.ai-chat-form textarea::placeholder {
+  font: inherit;
+  line-height: inherit;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* Touch: mind. 16px verhindert iOS-Zoom beim Fokus — für Nachrichten und Textfeld gleich. */
 @media (pointer: coarse) {
-  .ai-chat-form textarea {
+  .ai-chat-panel :where(.ai-chat-message, .ai-chat-form textarea) {
     font-size: max(16px, var(--ai-chat-copy-size, clamp(0.875rem, 0.76rem + 0.28vw, 0.96rem)));
   }
 
@@ -3919,8 +3943,9 @@ body.theme-light .ai-chat-form textarea {
 }
 
 .ai-chat--compact .ai-chat-panel {
-  --ai-chat-copy-size: clamp(0.875rem, 0.8rem + 0.22vw, 0.92rem);
-  --ai-chat-copy-lh: 1.42;
+  /* Kompakt, aber lesbar; auf ≤560px zusätzlich verkleinert. */
+  --ai-chat-copy-size: clamp(0.9375rem, 0.88rem + 0.26vw, 1rem);
+  --ai-chat-copy-lh: 1.45;
   max-height: min(44rem, calc(var(--ai-chat-vvh, 100dvh) - 2rem));
 }
 
@@ -4069,8 +4094,8 @@ body.theme-light .ai-chat-form textarea {
   }
 
   .ai-chat-panel {
-    /* Etwas größer als auf Desktop-Schmal; Eingabe-Zoom verhindert (pointer: coarse) + max(16px) */
-    --ai-chat-copy-size: clamp(0.9375rem, 0.82rem + 0.42vw, 1.04rem);
+    /* Schmale Phones: etwas kleiner als 561px+, weiterhin Touch-freundlich */
+    --ai-chat-copy-size: clamp(0.875rem, 0.76rem + 0.32vw, 0.98rem);
     width: min(26rem, calc(100vw - 1.4rem));
     /*
       Feste Höhe: Nur max-height lässt die Flex-Spalte auf Inhalt schrumpfen — dann kollabiert
@@ -4086,7 +4111,7 @@ body.theme-light .ai-chat-form textarea {
   }
 
   .ai-chat--compact .ai-chat-panel {
-    --ai-chat-copy-size: clamp(0.9rem, 0.78rem + 0.4vw, 1rem);
+    --ai-chat-copy-size: clamp(0.875rem, 0.8rem + 0.32vw, 1rem);
     --ai-chat-panel-view-h: min(40rem, calc(var(--ai-chat-vvh, 100dvh) - 2.15rem));
     height: var(--ai-chat-panel-view-h);
     max-height: var(--ai-chat-panel-view-h);
@@ -4095,7 +4120,7 @@ body.theme-light .ai-chat-form textarea {
   }
 
   .ai-chat--wide .ai-chat-panel {
-    --ai-chat-copy-size: clamp(0.9375rem, 0.82rem + 0.4vw, 1.06rem);
+    --ai-chat-copy-size: clamp(0.875rem, 0.78rem + 0.32vw, 1rem);
   }
 
   .ai-chat-toggle {
@@ -4122,16 +4147,16 @@ body.theme-light .ai-chat-form textarea {
 
   .ai-chat-subtitle {
     max-width: 18rem;
-    font-size: 0.74rem;
+    font-size: 0.7rem;
     line-height: 1.4;
   }
 
   .ai-chat-header h2 {
-    font-size: 1.08rem;
+    font-size: 1rem;
   }
 
   .ai-chat-kicker {
-    font-size: 0.66rem;
+    font-size: 0.62rem;
   }
 
   .ai-chat-status,
@@ -4146,9 +4171,9 @@ body.theme-light .ai-chat-form textarea {
   }
 
   .ai-chat-metrics span {
-    font-size: 0.68rem;
-    min-height: 1.45rem;
-    padding: 0.22rem 0.48rem;
+    font-size: 0.64rem;
+    min-height: 1.4rem;
+    padding: 0.22rem 0.46rem;
   }
 
   .ai-chat-metrics::after {
@@ -4204,6 +4229,17 @@ body.theme-light .ai-chat-form textarea {
   .ai-chat-tech dl > div {
     grid-template-columns: 1fr;
     gap: 0.18rem;
+  }
+
+  .ai-chat-tech summary,
+  .ai-chat-debug summary {
+    font-size: 0.7rem;
+    padding: 0.5rem 0.62rem;
+  }
+
+  .ai-chat-tech dt,
+  .ai-chat-tech dd {
+    font-size: 0.72rem;
   }
 }
 

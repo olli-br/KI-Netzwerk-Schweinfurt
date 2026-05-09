@@ -17,6 +17,10 @@
   - 08.05.2026  [Oliver Braun]   Add local WebLLM chat assistant.
   - 09.05.2026  [Oliver Braun]   Markdown rendering and mobile UX polish.
   - 09.05.2026  [Oliver Braun]   UI-Feinschliff: Layout, Mobile/Safari, KI-Chat & WebLLM.
+  - 10.05.2026  [Oliver Braun]   KI-Chat: Technik-Tabelle um Temp./Strafen erweitert; Labels aus JSON.
+  - 10.05.2026  [Oliver Braun]   Erstsprache aus Browser-Locale; nur bei manueller Wahl in localStorage.
+  - 10.05.2026  [Oliver Braun]   KI-Kontext: vor jeder Antwort frisch vom Server (JSON/HTML), kein fester Cache.
+  - 10.05.2026  [Oliver Braun]   Theme/Sprache: System (prefers-color-scheme, Browser-Sprache); Viewport-Layout.
 
   Independently developed by me.
   ============================================================================
@@ -44,8 +48,25 @@
     accent: "#14b8a6"
   };
   const DEFAULT_LANG = "de";
+
+  /** Nur `de` / `en`; ohne gespeicherte Wahl → Browser-Sprache (`navigator.languages`). */
+  function resolveInitialLanguage() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "de" || stored === "en") return stored;
+    const list =
+      typeof navigator.languages !== "undefined" && navigator.languages?.length
+        ? Array.from(navigator.languages)
+        : [navigator.language || ""];
+    for (const raw of list) {
+      const tag = String(raw).toLowerCase();
+      if (tag.startsWith("de")) return "de";
+      if (tag.startsWith("en")) return "en";
+    }
+    return DEFAULT_LANG;
+  }
+
   const state = {
-    lang: localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG,
+    lang: resolveInitialLanguage(),
     components: {},
     stopNetworkAnimation: null,
     stopHeaderNetworkAnimation: null,
@@ -91,6 +112,8 @@
     _networkScrollCleanup: null
   };
 
+  document.documentElement.lang = state.lang;
+
   document.addEventListener("DOMContentLoaded", init);
 
   async function init() {
@@ -102,6 +125,8 @@
     console.log("Theme initialized");
     await loadPageTextContent();
     console.log("Page text content loaded");
+    bindViewportLayoutVars();
+    bindBrowserLanguageListener();
     initHeaderNetworkAnimation();
     applyTranslations();
     console.log("Translations applied");
@@ -384,10 +409,27 @@
     });
   }
 
+  /** Ohne gespeichertes Theme: Hell/Dunkel an `prefers-color-scheme` koppeln. */
+  function readStoredOrSystemTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+
+  function bindSystemThemeListener() {
+    if (bindSystemThemeListener._done) return;
+    bindSystemThemeListener._done = true;
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onChange = () => {
+      if (localStorage.getItem(THEME_KEY)) return;
+      applyTheme(mq.matches ? "light" : "dark");
+    };
+    mq.addEventListener("change", onChange);
+  }
+
   function initTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    const theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
-    applyTheme(theme);
+    applyTheme(readStoredOrSystemTheme());
+    bindSystemThemeListener();
     document.querySelectorAll(".theme-toggle").forEach((toggle) => {
       if (toggle.dataset.themeBound === "true") return;
       toggle.dataset.themeBound = "true";
@@ -397,6 +439,40 @@
         localStorage.setItem(THEME_KEY, nextTheme);
         playThemeDiagonalTransition(goingLight, () => applyTheme(nextTheme));
       });
+    });
+  }
+
+  /** Sichtbare Viewport-Höhe/Offset (mobile Browser-Leisten) → CSS-Variablen für Seitenhöhe & Abstände. */
+  function bindViewportLayoutVars() {
+    const root = document.documentElement;
+    const update = () => {
+      const vv = window.visualViewport;
+      const h = vv ? Math.max(1, Math.round(vv.height)) : window.innerHeight;
+      const top = vv ? Math.round(vv.offsetTop) : 0;
+      root.style.setProperty("--layout-viewport-height", `${h}px`);
+      root.style.setProperty("--layout-viewport-offset-top", `${top}px`);
+    };
+    update();
+    window.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
+  }
+
+  /** Ohne gespeicherte Sprache: bei Browser-Sprachwechsel nachziehen. */
+  function bindBrowserLanguageListener() {
+    if (bindBrowserLanguageListener._done) return;
+    bindBrowserLanguageListener._done = true;
+    window.addEventListener("languagechange", async () => {
+      if (localStorage.getItem(STORAGE_KEY)) return;
+      const next = resolveInitialLanguage();
+      if (next === state.lang) return;
+      state.lang = next;
+      document.documentElement.lang = state.lang;
+      applyTranslations();
+      wireLanguageSwitch();
+      highlightActiveNav();
+      await runPageScript();
+      await initAiChatAssistant();
     });
   }
 
@@ -467,11 +543,13 @@
       if (viewport?.parentNode) viewport.parentNode.insertBefore(meta, viewport.nextSibling);
       else document.head.appendChild(meta);
     }
-    meta.setAttribute("content", isLight ? "#f6f8fb" : "#060a12");
+    /* Hell: Weiß wie Kopfzeile — bündig zur Statusleiste (Safari/iOS). */
+    meta.setAttribute("content", isLight ? "#ffffff" : "#060a12");
   }
 
   function applyTheme(theme) {
     const isLight = theme === "light";
+    document.documentElement.style.colorScheme = isLight ? "light" : "dark";
     document.body.classList.toggle("theme-light", isLight);
     document.querySelectorAll(".theme-toggle").forEach((toggle) =>
       toggle.classList.toggle("theme-light", isLight)
@@ -958,14 +1036,64 @@
     renderAiChatTechInfo(root);
   }
 
+  /** Gleicher Ursprung: HTML zu Klartext (für optionalen Live-„Crawl“). */
+  function stripHtmlToPlainText(html, maxLen) {
+    const cap = typeof maxLen === "number" && maxLen > 0 ? maxLen : 1200;
+    try {
+      const doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+      const root = doc.querySelector("main") || doc.body;
+      if (!root) return "";
+      const text = root.innerText.replace(/\s+/g, " ").trim();
+      return text.slice(0, cap);
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function getAiChatHtmlCrawlUrls() {
+    const fromJson = state._aiChatContent?.contextHtmlPages;
+    if (Array.isArray(fromJson) && fromJson.length) {
+      return fromJson.map((u) => String(u || "").trim()).filter(Boolean);
+    }
+    return ["./index.html", "./events.html", "./blog.html", "./about.html"];
+  }
+
+  async function fetchLiveHtmlDigest(urls, perPageMax, totalBudget) {
+    const maxTotal = typeof totalBudget === "number" && totalBudget > 0 ? totalBudget : 3200;
+    const per = typeof perPageMax === "number" && perPageMax > 0 ? perPageMax : 1000;
+    const chunks = [];
+    let used = 0;
+    for (const url of urls) {
+      if (used >= maxTotal) break;
+      const html = await fetchText(url, { fresh: true });
+      const slice = Math.min(per, maxTotal - used);
+      const plain = stripHtmlToPlainText(html, slice);
+      if (!plain) continue;
+      const block = `--- ${url} ---\n${plain}`;
+      chunks.push(block);
+      used += block.length + 2;
+    }
+    return chunks.join("\n\n").trim();
+  }
+
   async function getAiChatContextData(root) {
-    if (state._assistantContextData?.lang === state.lang) return state._assistantContextData;
     const labels = getAiChatLabels();
     state._assistantTech.contextStatus = labels.loadingContext || "loading";
     setAiChatLive(root, labels.loadingContext || labels.loading, true);
     renderAiChatTechInfo(root);
-    const [events, posts] = await Promise.all([loadEvents(), loadPostsIndex()]);
-    const context = buildAiAssistantContext(events, posts);
+    const htmlUrls = getAiChatHtmlCrawlUrls();
+    const [events, posts, homeSnap, globalSnap, htmlDigest] = await Promise.all([
+      loadEvents({ force: true }),
+      loadPostsIndex({ force: true }),
+      fetchJson("./data/home/home-page.json", { fresh: true }),
+      fetchJson("./data/global/global.json", { fresh: true }),
+      htmlUrls.length ? fetchLiveHtmlDigest(htmlUrls, 1100, 3400) : Promise.resolve("")
+    ]);
+    const context = buildAiAssistantContext(events, posts, {
+      home: homeSnap && typeof homeSnap === "object" ? homeSnap : null,
+      globalData: globalSnap && typeof globalSnap === "object" ? globalSnap : null,
+      htmlDigest: htmlDigest && String(htmlDigest).trim() ? String(htmlDigest).trim() : null
+    });
     state._assistantContextData = {
       lang: state.lang,
       events: Array.isArray(events) ? events : [],
@@ -1017,7 +1145,10 @@
         clampAiChatNumber(state._assistantSettings.historyMessages, 2, 24, 8)
       );
       const messages = [
-        { role: "system", content: buildAiAssistantSystemPrompt(contextData.events, contextData.posts) },
+        {
+          role: "system",
+          content: buildAiAssistantSystemPrompt(contextData.events, contextData.posts, contextData.context)
+        },
         ...state._assistantMessages.slice(-histN).map((entry) => ({
           role: entry.role,
           content: entry.content
@@ -1303,7 +1434,10 @@
       [labels.techLastLatencyMs, formatMs(tech.lastLatencyMs)],
       [labels.techLastPromptChars, `${tech.lastPromptChars} ${labels.chars}`],
       [labels.techLastContextChars, `${tech.lastContextChars} ${labels.chars}`],
+      [labels.techTemperature, formatAiChatValueLabel("temperature", cfg.temperature)],
       [labels.techTopP, formatAiChatValueLabel("topP", cfg.topP)],
+      [labels.techFrequencyPenalty, formatAiChatValueLabel("frequencyPenalty", cfg.frequencyPenalty)],
+      [labels.techPresencePenalty, formatAiChatValueLabel("presencePenalty", cfg.presencePenalty)],
       [labels.techHistoryMessages, String(cfg.historyMessages ?? "")],
       [labels.techMaxQuestionChars, String(cfg.maxQuestionChars ?? "")],
       [labels.techContextStatus, tech.contextStatus || labels.contextNotLoaded],
@@ -1484,22 +1618,32 @@
       .reduce((score, word) => score + (haystack.includes(word) ? 1 : 0), 0);
   }
 
-  function buildAiAssistantSystemPrompt(events, posts) {
+  function buildAiAssistantSystemPrompt(events, posts, prebuiltContext) {
     const languageName = state.lang === "en" ? "English" : "German";
-    const context = buildAiAssistantContext(events, posts);
+    const labels = getAiChatLabels();
+    const context =
+      typeof prebuiltContext === "string" && prebuiltContext.trim()
+        ? prebuiltContext.trim()
+        : buildAiAssistantContext(events, posts);
+    const liveNote =
+      labels.systemContextLive ||
+      "The website context below was just fetched over HTTP from this deployment (JSON + optional HTML); it is not baked into the model.";
     return [
       `You are the helpful website assistant for "KI Netzwerk Schweinfurt". Answer in ${languageName}.`,
       "Use only the provided website context. If information is missing, say that the website does not contain it and suggest contacting ki.netzwerk.schweinfurt@gmail.com.",
       "Keep answers concise, friendly and practical. Do not invent dates, locations or links.",
+      liveNote,
       "",
       "Website context:",
       context
     ].join("\n");
   }
 
-  function buildAiAssistantContext(events, posts) {
-    const home = state._homePageContent || {};
-    const faq = state._globalData?.[state.lang]?.faq || state._globalData?.de?.faq || {};
+  function buildAiAssistantContext(events, posts, extras) {
+    const x = extras && typeof extras === "object" ? extras : {};
+    const home = (x.home && typeof x.home === "object" ? x.home : null) || state._homePageContent || {};
+    const globalSrc = (x.globalData && typeof x.globalData === "object" ? x.globalData : null) || state._globalData || {};
+    const faq = globalSrc[state.lang]?.faq || globalSrc.de?.faq || {};
     const sponsors = Array.isArray(home.sponsors)
       ? home.sponsors.map((s) => `${s.name || ""}${s.link ? ` (${s.link})` : ""}`).filter(Boolean)
       : [];
@@ -1540,6 +1684,11 @@
       .map((item) => `${item.question || ""} ${item.answer || ""}`.trim())
       .filter(Boolean);
 
+    const htmlBlock =
+      x.htmlDigest && String(x.htmlDigest).trim()
+        ? `\nHTML/Seiten-Klartext (Auszug, gleicher Ursprung):\n${String(x.htmlDigest).trim()}`
+        : "";
+
     return [
       `Name: ${pickLocalized(home.heroTitle) || "KI Netzwerk Schweinfurt"}`,
       `Kurzbeschreibung: ${pickLocalized(home.heroText)}`,
@@ -1549,7 +1698,8 @@
       `Kontakt: ki.netzwerk.schweinfurt@gmail.com`,
       `Events: ${eventLines.join("\n- ") || "keine Events gefunden"}`,
       `Blog/Rueckblicke: ${postLines.join("\n- ") || "keine Blogbeitraege gefunden"}`,
-      `FAQ: ${faqLines.join(" | ")}`
+      `FAQ: ${faqLines.join(" | ")}`,
+      htmlBlock
     ]
       .join("\n")
       .slice(0, Number(state._assistantSettings.contextChars) || 5200);
@@ -2102,8 +2252,8 @@
     }
   }
 
-  async function loadEvents() {
-    const rawItems = await loadEventEntries();
+  async function loadEvents(opts) {
+    const rawItems = await loadEventEntries(opts);
     if (!Array.isArray(rawItems)) return [];
     const items = (
       await Promise.all(
@@ -2113,7 +2263,8 @@
         const localizedContent = await resolveLocalizedMarkdown(
           item.detail?.contentFile,
           item.detail?.content,
-          state.lang
+          state.lang,
+          opts
         );
         return {
           ...item,
@@ -2498,8 +2649,8 @@
     return `${minutes} ${getI18n("blog.list.readTime")}`;
   }
 
-  async function loadPostsIndex() {
-    const rawItems = await loadPostEntries();
+  async function loadPostsIndex(opts) {
+    const rawItems = await loadPostEntries(opts);
     if (!Array.isArray(rawItems)) return [];
     const items = (
       await Promise.all(
@@ -2508,7 +2659,7 @@
           title: item.title?.[state.lang] || item.title?.de || "",
           teaser: item.teaser?.[state.lang] || item.teaser?.de || "",
           content:
-            (await resolveLocalizedMarkdown(item.detail?.contentFile, item.detail?.content, state.lang)) ||
+            (await resolveLocalizedMarkdown(item.detail?.contentFile, item.detail?.content, state.lang, opts)) ||
             item.content?.[state.lang] ||
             item.content?.de ||
             "",
@@ -2520,12 +2671,13 @@
     return items.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
-  async function resolveLocalizedMarkdown(fileRef, inlineRef, lang) {
+  async function resolveLocalizedMarkdown(fileRef, inlineRef, lang, opts) {
+    const fresh = Boolean(opts && opts.force);
     const filePath =
       (fileRef && typeof fileRef === "object" ? fileRef[lang] || fileRef.de : "") ||
       (typeof fileRef === "string" ? fileRef : "");
     if (filePath) {
-      const markdown = await fetchText(filePath);
+      const markdown = await fetchText(filePath, { fresh });
       if (markdown && markdown.trim()) return markdown;
     }
     if (inlineRef && typeof inlineRef === "object") return inlineRef[lang] || inlineRef.de || "";
@@ -2647,42 +2799,46 @@
     );
   }
 
-  async function loadEventEntries() {
-    if (state._eventsData) return state._eventsData;
-    const index = await fetchJson("./data/event/index.json");
+  async function loadEventEntries(opts) {
+    const force = Boolean(opts && opts.force);
+    if (!force && state._eventsData) return state._eventsData;
+    const index = await fetchJson("./data/event/index.json", { fresh: force });
     if (!index || !Array.isArray(index.files)) {
       console.warn("Event index missing or invalid:", index);
-      state._eventsData = [];
-      return state._eventsData;
+      if (!force) state._eventsData = [];
+      return [];
     }
     const entries = await Promise.all(
       index.files.map(async (name) => {
-        const item = await fetchJson(`./data/event/events/${name}`);
+        const item = await fetchJson(`./data/event/events/${name}`, { fresh: force });
         if (!item) console.warn("Failed to load event entry:", name);
         return item;
       })
     );
-    state._eventsData = entries.filter(Boolean);
-    return state._eventsData;
+    const list = entries.filter(Boolean);
+    state._eventsData = list;
+    return list;
   }
 
-  async function loadPostEntries() {
-    if (state._postsData) return state._postsData;
-    const index = await fetchJson("./data/blog/index.json");
+  async function loadPostEntries(opts) {
+    const force = Boolean(opts && opts.force);
+    if (!force && state._postsData) return state._postsData;
+    const index = await fetchJson("./data/blog/index.json", { fresh: force });
     if (!index || !Array.isArray(index.files)) {
       console.warn("Blog index missing or invalid:", index);
-      state._postsData = [];
-      return state._postsData;
+      if (!force) state._postsData = [];
+      return [];
     }
     const entries = await Promise.all(
       index.files.map(async (name) => {
-        const item = await fetchJson(`./data/blog/posts/${name}`);
+        const item = await fetchJson(`./data/blog/posts/${name}`, { fresh: force });
         if (!item) console.warn("Failed to load blog post entry:", name);
         return item;
       })
     );
-    state._postsData = entries.filter(Boolean);
-    return state._postsData;
+    const list = entries.filter(Boolean);
+    state._postsData = list;
+    return list;
   }
 
   async function ensureMarkdownParser() {
@@ -2892,9 +3048,10 @@
     return `${url}${sep}v=${devAssetBustToken}`;
   }
 
-  async function fetchJson(url) {
+  async function fetchJson(url, opts) {
+    const fresh = Boolean(opts && opts.fresh);
     try {
-      const response = await fetch(url, { cache: "no-cache" });
+      const response = await fetch(url, { cache: fresh ? "no-store" : "no-cache" });
       if (!response.ok) {
         console.error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
         return null;
@@ -2906,9 +3063,10 @@
     }
   }
 
-  async function fetchText(url) {
+  async function fetchText(url, opts) {
+    const fresh = Boolean(opts && opts.fresh);
     try {
-      const response = await fetch(url, { cache: "no-cache" });
+      const response = await fetch(url, { cache: fresh ? "no-store" : "no-cache" });
       if (!response.ok) {
         console.error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
         return "";

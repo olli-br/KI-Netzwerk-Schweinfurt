@@ -14,6 +14,16 @@
         "date": "09.05.2026",
         "author": "Oliver Braun",
         "change": "UI-Feinschliff: KI-Chat & WebLLM (Einstellungen, Texte)."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "KI-Chat: fehlende deutsche Technik-Labels (Top-P, Verlauf, Limit); EN-Einstellungs-Texte ergänzt."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "KI-Kontext: vor jeder Antwort frisch per HTTP (JSON, Events/Blog, HTML-Auszüge); contextHtmlPages."
       }
     ]
   },
@@ -36,6 +46,12 @@
   "webLlmModuleUrls": [
     "https://esm.run/@mlc-ai/web-llm",
     "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm"
+  ],
+  "contextHtmlPages": [
+    "./index.html",
+    "./events.html",
+    "./blog.html",
+    "./about.html"
   ],
   "models": [
     {
@@ -201,6 +217,12 @@
       "techLastLatencyMs": "Letzte Antwort",
       "techLastPromptChars": "Fragegröße",
       "techLastContextChars": "Kontextgröße",
+      "techTemperature": "Temperatur",
+      "techTopP": "Top-P (Diversität)",
+      "techFrequencyPenalty": "Wiederholungs-Strafe",
+      "techPresencePenalty": "Themen-Strafe",
+      "techHistoryMessages": "Chat-Verlauf (Nachrichten)",
+      "techMaxQuestionChars": "Fragenlimit",
       "techFallback": "Fallback",
       "techLastError": "Letzter Technikhinweis",
       "techContextStatus": "Kontextdaten",
@@ -208,7 +230,8 @@
       "active": "aktiv",
       "inactive": "aus",
       "contextNotLoaded": "noch nicht geladen",
-      "contextLoaded": "geladen"
+      "contextLoaded": "geladen",
+      "systemContextLive": "Der folgende Website-Kontext wurde soeben per HTTP von dieser Installation geladen (JSON, Event-/Blog-Dateien und gekürzter Klartext aus den HTML-Seiten in contextHtmlPages). Er steht nicht fest im Modell."
     },
     "en": {
       "button": "Open assistant",
@@ -221,7 +244,13 @@
       "settingTemperature": "Creativity",
       "settingMaxTokens": "Answer length",
       "settingContextChars": "Context size",
+      "settingTopP": "Top-P (diversity)",
+      "settingFrequencyPenalty": "Frequency penalty",
+      "settingPresencePenalty": "Presence penalty",
+      "settingHistoryMessages": "Chat history (messages)",
+      "settingMaxQuestionChars": "Max. question length",
       "settingCacheBackend": "Cache storage",
+      "settingAccent": "Accent color",
       "cacheBackendIndexeddb": "IndexedDB (recommended for cache errors)",
       "cacheBackendCache": "Browser Cache API",
       "useFallback": "Use local fallback",
@@ -263,7 +292,10 @@
       "techLastLatencyMs": "Last answer",
       "techLastPromptChars": "Question size",
       "techLastContextChars": "Context size",
+      "techTemperature": "Temperature",
       "techTopP": "Top-P",
+      "techFrequencyPenalty": "Frequency penalty",
+      "techPresencePenalty": "Presence penalty",
       "techHistoryMessages": "History (messages)",
       "techMaxQuestionChars": "Question limit",
       "techFallback": "Fallback",
@@ -273,7 +305,8 @@
       "active": "active",
       "inactive": "off",
       "contextNotLoaded": "not loaded yet",
-      "contextLoaded": "loaded"
+      "contextLoaded": "loaded",
+      "systemContextLive": "The website context below was just fetched over HTTP from this deployment (JSON, event and blog files, and trimmed plain text from the HTML pages listed in contextHtmlPages). It is not baked into the model weights."
     }
   }
 }
