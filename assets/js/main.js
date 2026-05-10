@@ -17,10 +17,7 @@
   - 08.05.2026  [Oliver Braun]   Add local WebLLM chat assistant.
   - 09.05.2026  [Oliver Braun]   Markdown rendering and mobile UX polish.
   - 09.05.2026  [Oliver Braun]   UI-Feinschliff: Layout, Mobile/Safari, KI-Chat & WebLLM.
-  - 10.05.2026  [Oliver Braun]   KI-Chat: Technik-Tabelle um Temp./Strafen erweitert; Labels aus JSON.
-  - 10.05.2026  [Oliver Braun]   Erstsprache aus Browser-Locale; nur bei manueller Wahl in localStorage.
-  - 10.05.2026  [Oliver Braun]   KI-Kontext: vor jeder Antwort frisch vom Server (JSON/HTML), kein fester Cache.
-  - 10.05.2026  [Oliver Braun]   Theme/Sprache: System (prefers-color-scheme, Browser-Sprache); Viewport-Layout.
+  - 10.05.2026  [Oliver Braun]   Faster AI chat: parallel init, streaming deltas, same-origin crawler with cache; light-mode tweaks; drop dead settings.
 
   Independently developed by me.
   ============================================================================
@@ -31,21 +28,28 @@
   const THEME_KEY = "kins-theme";
   const AI_CHAT_SETTINGS_KEY = "kins-ai-chat-settings";
   const AI_ASSISTANT_MODEL = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
+  /* Engine-Konstanten (kein UI-Regler — stabilere Inferenz auf kleinen Modellen) */
+  const AI_CHAT_TOP_P = 0.92;
+  /* Crawl-/Kontext-Budget */
+  const AI_CRAWL_TTL_MS = 90_000;
+  const AI_CRAWL_CONCURRENCY = 4;
+  const AI_CRAWL_MAX_PAGES = 30;
+  const AI_CRAWL_PER_PAGE_CHARS = 1100;
+  const AI_CRAWL_TOTAL_CHARS = 4000;
+  const AI_CONTEXT_TTL_MS = 90_000;
+  /* Streaming: Live-Anzeige nicht öfter als alle ~180ms */
+  const AI_LIVE_UPDATE_MIN_MS = 180;
   const FALLBACK_AI_CHAT_SETTINGS = {
     model: AI_ASSISTANT_MODEL,
     temperature: 0.35,
-    topP: 0.92,
-    frequencyPenalty: 0,
-    presencePenalty: 0,
     maxTokens: 320,
     contextChars: 5200,
-    historyMessages: 8,
+    historyMessages: 6,
     maxQuestionChars: 700,
     cacheBackend: "indexeddb",
     useFallback: true,
     showTech: false,
-    showDebugData: false,
-    accent: "#14b8a6"
+    showDebugData: false
   };
   const DEFAULT_LANG = "de";
 
@@ -90,6 +94,10 @@
     _assistantBusy: false,
     _assistantCancelRequested: false,
     _assistantRunId: 0,
+    /** @type {null | Promise<GPUAdapter | null>} */
+    _aiAdapterPromise: null,
+    /** Per-URL Crawl-Cache (Klartext + Links + Zeitstempel). */
+    _aiSiteCrawl: null,
     /** @type {null | (() => void)} */
     _aiChatViewportUnbind: null,
     _assistantSettings: { ...FALLBACK_AI_CHAT_SETTINGS },
@@ -401,6 +409,8 @@
       btn.addEventListener("click", async () => {
         state.lang = btn.dataset.lang;
         localStorage.setItem(STORAGE_KEY, state.lang);
+        /* Kontext-Snapshot ist sprachgebunden — erzwingt Neuaufbau bei nächstem Senden. */
+        state._assistantContextData = null;
         applyTranslations();
         wireLanguageSwitch();
         await runPageScript();
@@ -776,7 +786,9 @@
       });
     });
     root.querySelector(".ai-chat-reset")?.addEventListener("click", () => {
-      state._assistantSettings = getResponsiveDefaultAiChatSettings();
+      state._assistantSettings = getAiChatDefaultSettings();
+      /* Reset wirkt sich auf Kontextbudget aus — Snapshot fallen lassen. */
+      state._assistantContextData = null;
       saveAiChatSettings();
       applyAiChatSettings(root);
     });
@@ -835,9 +847,6 @@
     if (!modelIds.includes(next.model)) next.model = defaults.model;
 
     next.temperature = clampAiChatNumber(next.temperature, 0, 1, defaults.temperature);
-    next.topP = clampAiChatNumber(next.topP, 0.5, 1, defaults.topP);
-    next.frequencyPenalty = clampAiChatNumber(next.frequencyPenalty, -2, 2, defaults.frequencyPenalty);
-    next.presencePenalty = clampAiChatNumber(next.presencePenalty, -2, 2, defaults.presencePenalty);
     next.maxTokens = Math.round(clampAiChatNumber(next.maxTokens, 120, 2048, defaults.maxTokens));
     next.contextChars = Math.round(clampAiChatNumber(next.contextChars, 1800, 9000, defaults.contextChars));
     next.historyMessages = Math.round(clampAiChatNumber(next.historyMessages, 2, 24, defaults.historyMessages));
@@ -846,15 +855,17 @@
     next.useFallback = Boolean(next.useFallback);
     next.showTech = Boolean(next.showTech);
     next.showDebugData = Boolean(next.showDebugData);
-    const accent = String(next.accent || "").trim();
-    next.accent = /^#[0-9A-Fa-f]{6}$/i.test(accent) ? accent.toLowerCase() : defaults.accent;
+    /* Alte localStorage-Werte aufräumen */
+    delete next.accent;
+    delete next.topP;
+    delete next.frequencyPenalty;
+    delete next.presencePenalty;
 
     return next;
   }
 
   function formatAiChatValueLabel(key, value) {
-    if (key === "temperature" || key === "topP") return Number(value).toFixed(2);
-    if (key === "frequencyPenalty" || key === "presencePenalty") return Number(value).toFixed(1);
+    if (key === "temperature") return Number(value).toFixed(2);
     return String(value);
   }
 
@@ -918,12 +929,8 @@
     `;
   }
 
-  function getResponsiveDefaultAiChatSettings() {
-    return getAiChatDefaultSettings();
-  }
-
   function loadAiChatSettings() {
-    const defaults = getResponsiveDefaultAiChatSettings();
+    const defaults = getAiChatDefaultSettings();
     try {
       const saved = JSON.parse(localStorage.getItem(AI_CHAT_SETTINGS_KEY) || "null");
       if (!saved || typeof saved !== "object") return defaults;
@@ -955,6 +962,10 @@
       state._assistantTech.progress = "Modell gewechselt";
       state._assistantTech.loadMs = null;
     }
+    if (key === "contextChars") {
+      /* Kontextbudget verändert ⇒ vorhandenen Snapshot verwerfen, beim nächsten Prompt neu bauen. */
+      state._assistantContextData = null;
+    }
     state._assistantTech.model = state._assistantSettings.model;
   }
 
@@ -964,7 +975,7 @@
     state._assistantSettings = normalizeAiChatSettings(state._assistantSettings);
     const settings = state._assistantSettings;
     chat.classList.add("ai-chat--compact", "ai-chat--right");
-    chat.style.setProperty("--ai-chat-accent", settings.accent || FALLBACK_AI_CHAT_SETTINGS.accent);
+    chat.style.removeProperty("--ai-chat-accent");
     state._assistantTech.model = settings.model || AI_ASSISTANT_MODEL;
 
     const setVisible = (selector, visible) => {
@@ -1036,70 +1047,253 @@
     renderAiChatTechInfo(root);
   }
 
-  /** Gleicher Ursprung: HTML zu Klartext (für optionalen Live-„Crawl“). */
-  function stripHtmlToPlainText(html, maxLen) {
-    const cap = typeof maxLen === "number" && maxLen > 0 ? maxLen : 1200;
+  /* -------- Same-Origin Site-Crawler (parallel, mit Session-TTL-Cache) ----------------------- */
+
+  /** Strippt Skript-/Style-/Layout-Hülsen und liefert kompakten Klartext der Seiteninhalte. */
+  function stripHtmlForAiContext(html) {
+    if (!html) return "";
+    let doc;
     try {
-      const doc = new DOMParser().parseFromString(String(html || ""), "text/html");
-      const root = doc.querySelector("main") || doc.body;
-      if (!root) return "";
-      const text = root.innerText.replace(/\s+/g, " ").trim();
-      return text.slice(0, cap);
+      doc = new DOMParser().parseFromString(String(html), "text/html");
     } catch (_) {
       return "";
     }
+    const removeSelectors = [
+      "script", "style", "noscript", "template", "svg", "iframe",
+      ".ai-chat", "#ai-chat-root", ".fetch-blocked-banner",
+      ".site-header", ".site-footer", "#site-header", "#site-footer"
+    ];
+    doc.querySelectorAll(removeSelectors.join(",")).forEach((el) => el.remove());
+    const root = doc.querySelector("main") || doc.body;
+    if (!root) return "";
+    const raw = root.innerText || root.textContent || "";
+    return raw.replace(/\s+/g, " ").trim();
   }
 
-  function getAiChatHtmlCrawlUrls() {
-    const fromJson = state._aiChatContent?.contextHtmlPages;
-    if (Array.isArray(fromJson) && fromJson.length) {
-      return fromJson.map((u) => String(u || "").trim()).filter(Boolean);
+  function pathnameDirname(pathname) {
+    const p = String(pathname || "");
+    const i = p.lastIndexOf("/");
+    return i >= 0 ? p.slice(0, i + 1) : "/";
+  }
+
+  function isAllowedAiHtmlCrawlPathname(pathname) {
+    const lower = String(pathname || "").toLowerCase();
+    if (!lower.endsWith(".html")) return false;
+    if (lower.includes("/components/")) return false;
+    return true;
+  }
+
+  function isSameSiteForAiCrawl(target, baseline) {
+    try {
+      if (baseline.protocol === "https:" || baseline.protocol === "http:") {
+        return (target.protocol === "https:" || target.protocol === "http:") && target.origin === baseline.origin;
+      }
+      if (baseline.protocol === "file:" && target.protocol === "file:") {
+        return pathnameDirname(target.pathname) === pathnameDirname(baseline.pathname);
+      }
+    } catch (_) {
+      return false;
     }
-    return ["./index.html", "./events.html", "./blog.html", "./about.html"];
+    return false;
   }
 
-  async function fetchLiveHtmlDigest(urls, perPageMax, totalBudget) {
-    const maxTotal = typeof totalBudget === "number" && totalBudget > 0 ? totalBudget : 3200;
-    const per = typeof perPageMax === "number" && perPageMax > 0 ? perPageMax : 1000;
+  /** Stabile URL-Schreibweise (gleiche Seite ⇒ gleicher Schlüssel). */
+  function normalizeAiCrawlUrl(url) {
+    const u = url instanceof URL ? new URL(url.href) : new URL(String(url));
+    u.hash = "";
+    u.search = "";
+    if (u.pathname === "/" || u.pathname === "") u.pathname = "/index.html";
+    return u.href;
+  }
+
+  function collectSameOriginHtmlLinksFromHtml(html, pageHref) {
+    const found = new Set();
+    let doc;
+    try {
+      doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+    } catch (_) {
+      return found;
+    }
+    const base = String(pageHref || "").trim() || window.location.href;
+    const baseline = new URL(window.location.href);
+    doc.querySelectorAll("a[href]").forEach((el) => {
+      const raw = el.getAttribute("href");
+      if (!raw) return;
+      const trimmed = raw.trim();
+      if (!trimmed || trimmed.startsWith("#")) return;
+      const lower = trimmed.toLowerCase();
+      if (lower.startsWith("mailto:") || lower.startsWith("javascript:") || lower.startsWith("tel:")) return;
+      try {
+        const u = new URL(trimmed, base);
+        if (!isSameSiteForAiCrawl(u, baseline)) return;
+        if (!isAllowedAiHtmlCrawlPathname(u.pathname)) return;
+        found.add(normalizeAiCrawlUrl(u));
+      } catch (_) {
+        /* ignore */
+      }
+    });
+    return found;
+  }
+
+  function shortLabelForHtmlDigestUrl(pageHref) {
+    try {
+      const u = new URL(pageHref);
+      const tail = u.pathname.split("/").filter(Boolean).pop() || u.pathname;
+      return tail || pageHref;
+    } catch (_) {
+      return pageHref;
+    }
+  }
+
+  /**
+   * Sammelt Seed-URLs für den BFS-Crawl. Da Header/Footer als Partials zur Laufzeit
+   * eingehängt werden, holen wir sie zur reinen Linkermittlung mit ab — damit die
+   * gesamte Site-Navigation (alle Top-Level-Seiten) aus dem realen Markup stammt.
+   */
+  async function harvestAiCrawlSeeds() {
+    const seeds = new Set();
+    try {
+      seeds.add(normalizeAiCrawlUrl(new URL("./index.html", window.location.href)));
+    } catch (_) {}
+    try {
+      const cur = new URL(window.location.href);
+      if (cur.pathname.toLowerCase().endsWith(".html")) seeds.add(normalizeAiCrawlUrl(cur));
+    } catch (_) {}
+    const partials = ["./components/header.html", "./components/footer.html"];
+    const partialHtml = await Promise.all(partials.map((url) => fetchText(url, { fresh: true })));
+    partials.forEach((url, i) => {
+      const html = partialHtml[i];
+      if (!html) return;
+      const base = (() => {
+        try { return new URL(url, window.location.href).href; } catch (_) { return window.location.href; }
+      })();
+      for (const link of collectSameOriginHtmlLinksFromHtml(html, base)) seeds.add(link);
+    });
+    return Array.from(seeds);
+  }
+
+  /**
+   * BFS über Same-Origin-`.html`-Seiten, parallel pro Welle.
+   * Cached pro Session: bei TTL-Hit wird nicht erneut geladen.
+   */
+  async function crawlSiteHtmlPagesForAiDigest(options) {
+    const opts = options && typeof options === "object" ? options : {};
+    const maxPages = Math.min(Math.max(Number(opts.maxPages) || AI_CRAWL_MAX_PAGES, 4), 60);
+    const ttlMs = Number.isFinite(opts.ttlMs) ? Math.max(0, opts.ttlMs) : AI_CRAWL_TTL_MS;
+    const concurrency = Math.min(Math.max(Number(opts.concurrency) || AI_CRAWL_CONCURRENCY, 1), 8);
+
+    if (!state._aiSiteCrawl) state._aiSiteCrawl = { pages: new Map() };
+    const cache = state._aiSiteCrawl.pages;
+    const now = Date.now();
+
+    const scheduled = new Set();
+    const queue = [];
+    const ordered = [];
+
+    function schedule(href) {
+      let u;
+      try {
+        u = new URL(href, window.location.href);
+      } catch (_) {
+        return;
+      }
+      if (!isSameSiteForAiCrawl(u, new URL(window.location.href))) return;
+      if (!isAllowedAiHtmlCrawlPathname(u.pathname)) return;
+      const key = normalizeAiCrawlUrl(u);
+      if (scheduled.has(key)) return;
+      scheduled.add(key);
+      queue.push(key);
+    }
+
+    for (const seed of await harvestAiCrawlSeeds()) schedule(seed);
+
+    while (queue.length && ordered.length < maxPages) {
+      const slot = Math.min(concurrency, maxPages - ordered.length, queue.length);
+      const wave = queue.splice(0, slot);
+      const results = await Promise.all(
+        wave.map(async (url) => {
+          const cached = cache.get(url);
+          if (cached && now - cached.fetchedAt < ttlMs) return cached;
+          const html = await fetchText(url, { fresh: true });
+          const plain = html ? stripHtmlForAiContext(html) : "";
+          const links = html ? Array.from(collectSameOriginHtmlLinksFromHtml(html, url)) : [];
+          const entry = { url, plain, links, fetchedAt: Date.now() };
+          cache.set(url, entry);
+          return entry;
+        })
+      );
+      for (const entry of results) {
+        if (!entry) continue;
+        if (entry.plain) ordered.push({ url: entry.url, plain: entry.plain });
+        if (ordered.length >= maxPages) break;
+        for (const link of entry.links || []) schedule(link);
+      }
+    }
+    return ordered;
+  }
+
+  function buildHtmlDigestFromPages(pages, perPageMax, totalBudget) {
+    const maxTotal = typeof totalBudget === "number" && totalBudget > 0 ? totalBudget : AI_CRAWL_TOTAL_CHARS;
+    const per = typeof perPageMax === "number" && perPageMax > 0 ? perPageMax : AI_CRAWL_PER_PAGE_CHARS;
     const chunks = [];
     let used = 0;
-    for (const url of urls) {
-      if (used >= maxTotal) break;
-      const html = await fetchText(url, { fresh: true });
+    for (const { url, plain } of pages) {
+      if (!plain || used >= maxTotal) continue;
       const slice = Math.min(per, maxTotal - used);
-      const plain = stripHtmlToPlainText(html, slice);
-      if (!plain) continue;
-      const block = `--- ${url} ---\n${plain}`;
+      const trimmed = plain.length > slice ? plain.slice(0, slice) : plain;
+      if (!trimmed) continue;
+      const label = shortLabelForHtmlDigestUrl(url);
+      const block = `--- ${label} ---\n${trimmed}`;
       chunks.push(block);
       used += block.length + 2;
     }
     return chunks.join("\n\n").trim();
   }
 
-  async function getAiChatContextData(root) {
+  /**
+   * Liefert einen frischen oder gecachten Kontext-Snapshot. Wiederverwendung über
+   * mehrere Folgefragen → keine erneuten Fetches innerhalb des TTL.
+   */
+  async function getOrBuildAiContextSnapshot(root, { force = false } = {}) {
+    const snapshot = state._assistantContextData;
+    const fresh =
+      !force &&
+      snapshot &&
+      snapshot.lang === state.lang &&
+      Number.isFinite(snapshot.ts) &&
+      Date.now() - snapshot.ts < AI_CONTEXT_TTL_MS;
+    if (fresh) return snapshot;
+
     const labels = getAiChatLabels();
     state._assistantTech.contextStatus = labels.loadingContext || "loading";
     setAiChatLive(root, labels.loadingContext || labels.loading, true);
     renderAiChatTechInfo(root);
-    const htmlUrls = getAiChatHtmlCrawlUrls();
-    const [events, posts, homeSnap, globalSnap, htmlDigest] = await Promise.all([
+
+    const [events, posts, homeSnap, globalSnap, htmlPages] = await Promise.all([
       loadEvents({ force: true }),
       loadPostsIndex({ force: true }),
       fetchJson("./data/home/home-page.json", { fresh: true }),
       fetchJson("./data/global/global.json", { fresh: true }),
-      htmlUrls.length ? fetchLiveHtmlDigest(htmlUrls, 1100, 3400) : Promise.resolve("")
+      crawlSiteHtmlPagesForAiDigest({ maxPages: AI_CRAWL_MAX_PAGES, ttlMs: AI_CRAWL_TTL_MS })
     ]);
+
+    const htmlDigest = htmlPages.length
+      ? buildHtmlDigestFromPages(htmlPages, AI_CRAWL_PER_PAGE_CHARS, AI_CRAWL_TOTAL_CHARS)
+      : "";
     const context = buildAiAssistantContext(events, posts, {
       home: homeSnap && typeof homeSnap === "object" ? homeSnap : null,
       globalData: globalSnap && typeof globalSnap === "object" ? globalSnap : null,
-      htmlDigest: htmlDigest && String(htmlDigest).trim() ? String(htmlDigest).trim() : null
+      htmlDigest: htmlDigest || null
     });
+
     state._assistantContextData = {
       lang: state.lang,
+      ts: Date.now(),
+      builtAt: new Date().toISOString(),
       events: Array.isArray(events) ? events : [],
       posts: Array.isArray(posts) ? posts : [],
-      context,
-      builtAt: new Date().toISOString()
+      crawledPages: htmlPages.length,
+      context
     };
     state._assistantTech.contextStatus = labels.contextLoaded || "loaded";
     state._assistantTech.lastContextChars = context.length;
@@ -1126,15 +1320,15 @@
     setAiChatStatus(statusEl, labels.loadingContext || labels.loading);
 
     try {
-      const contextData = await getAiChatContextData(root);
-      if (state._assistantCancelRequested || runId !== state._assistantRunId) {
-        throw new Error("Berechnung abgebrochen");
-      }
-      const engine = await ensureAiAssistantEngine((progressText, mode) => {
-        if (state._assistantCancelRequested || runId !== state._assistantRunId) return;
-        setAiChatLive(root, progressText || labels.loading, true, mode || "loading");
-        setAiChatStatus(statusEl, progressText || labels.loading);
-      });
+      /* Kontext und Engine parallel vorbereiten — Crawl/JSON läuft, während Adapter/Modell wartet. */
+      const [contextData, engine] = await Promise.all([
+        getOrBuildAiContextSnapshot(root),
+        ensureAiAssistantEngine((progressText, mode) => {
+          if (state._assistantCancelRequested || runId !== state._assistantRunId) return;
+          setAiChatLive(root, progressText || labels.loading, true, mode || "loading");
+          setAiChatStatus(statusEl, progressText || labels.loading);
+        })
+      ]);
       if (state._assistantCancelRequested || runId !== state._assistantRunId) {
         throw new Error("Berechnung abgebrochen");
       }
@@ -1142,7 +1336,7 @@
       setAiChatStatus(statusEl, labels.thinking);
 
       const histN = Math.round(
-        clampAiChatNumber(state._assistantSettings.historyMessages, 2, 24, 8)
+        clampAiChatNumber(state._assistantSettings.historyMessages, 2, 24, 6)
       );
       const messages = [
         {
@@ -1210,16 +1404,18 @@
   async function createAiAssistantCompletion(engine, messages, root, runId) {
     const s = state._assistantSettings;
     /* WebLLM/MLC: frequency_/presence_penalty führen mit manchen Modellen/Versionen zu Fehlern — nicht mitschicken. */
+    /* top_p ist Konstante (AI_CHAT_TOP_P): stabilere Inferenz als gemischte localStorage-Werte. */
     const request = {
       messages,
       temperature: clampAiChatNumber(s.temperature, 0, 1, 0.35),
       max_tokens: Math.round(clampAiChatNumber(s.maxTokens, 120, 2048, 320)),
-      top_p: clampAiChatNumber(s.topP, 0.5, 1, 0.92)
+      top_p: AI_CHAT_TOP_P
     };
 
     const assistantMessage = { role: "assistant", content: "" };
     state._assistantMessages.push(assistantMessage);
     renderAiChatMessages(root);
+    let lastLiveAt = 0;
 
     try {
       if (state._assistantCancelRequested || runId !== state._assistantRunId) {
@@ -1244,8 +1440,13 @@
         const delta = chunk?.choices?.[0]?.delta?.content || "";
         if (!delta) continue;
         assistantMessage.content += delta;
-        setAiChatLive(root, `WebLLM: ${assistantMessage.content.length} Zeichen`, true);
-        renderAiChatMessages(root);
+        /* Inkrementell: nur die letzte Sprechblase aktualisieren statt das ganze Listen-DOM. */
+        if (!appendAssistantStreamDelta(root, delta)) renderAiChatMessages(root);
+        const now = performance.now();
+        if (now - lastLiveAt > AI_LIVE_UPDATE_MIN_MS) {
+          lastLiveAt = now;
+          setAiChatLive(root, `WebLLM: ${assistantMessage.content.length} Zeichen`, true);
+        }
       }
       assistantMessage.content = assistantMessage.content.trim();
       renderAiChatMessages(root);
@@ -1264,9 +1465,32 @@
     }
   }
 
+  /** Hängt einen Streaming-Delta an die letzte Assistant-Bubble an (wenn vorhanden). */
+  function appendAssistantStreamDelta(root, delta) {
+    const list = root?.querySelector?.("[data-ai-chat-messages]");
+    if (!list) return false;
+    const last = list.lastElementChild;
+    if (!last || !last.classList.contains("ai-chat-message--assistant")) return false;
+    last.appendChild(document.createTextNode(delta));
+    list.scrollTop = list.scrollHeight;
+    return true;
+  }
+
   function removeAiChatMessage(message) {
     const index = state._assistantMessages.indexOf(message);
     if (index >= 0) state._assistantMessages.splice(index, 1);
+  }
+
+  /** Einmalige WebGPU-Adapter-Erkennung (geteilt zwischen Runtime-UI und Engine-Init). */
+  function ensureWebGpuAdapter() {
+    if (!navigator.gpu) return Promise.resolve(null);
+    if (!state._aiAdapterPromise) {
+      state._aiAdapterPromise = navigator.gpu.requestAdapter().catch((error) => {
+        state._aiAdapterPromise = null;
+        throw error;
+      });
+    }
+    return state._aiAdapterPromise;
   }
 
   async function ensureAiAssistantEngine(onProgress) {
@@ -1274,7 +1498,7 @@
     if (!navigator.gpu) {
       throw new Error("WebGPU is not available");
     }
-    const adapter = await navigator.gpu.requestAdapter();
+    const adapter = await ensureWebGpuAdapter();
     if (!adapter) {
       throw new Error("No WebGPU adapter found");
     }
@@ -1403,7 +1627,7 @@
     state._assistantTech.webgpu = "verfügbar";
     if (chip) chip.textContent = "WebGPU aktiv";
     try {
-      const adapter = await navigator.gpu.requestAdapter();
+      const adapter = await ensureWebGpuAdapter();
       const info = adapter?.info || {};
       const adapterName = [info.vendor, info.architecture || info.device, info.description]
         .filter(Boolean)
@@ -1435,9 +1659,7 @@
       [labels.techLastPromptChars, `${tech.lastPromptChars} ${labels.chars}`],
       [labels.techLastContextChars, `${tech.lastContextChars} ${labels.chars}`],
       [labels.techTemperature, formatAiChatValueLabel("temperature", cfg.temperature)],
-      [labels.techTopP, formatAiChatValueLabel("topP", cfg.topP)],
-      [labels.techFrequencyPenalty, formatAiChatValueLabel("frequencyPenalty", cfg.frequencyPenalty)],
-      [labels.techPresencePenalty, formatAiChatValueLabel("presencePenalty", cfg.presencePenalty)],
+      [labels.techTopP, AI_CHAT_TOP_P.toFixed(2)],
       [labels.techHistoryMessages, String(cfg.historyMessages ?? "")],
       [labels.techMaxQuestionChars, String(cfg.maxQuestionChars ?? "")],
       [labels.techContextStatus, tech.contextStatus || labels.contextNotLoaded],
@@ -1464,21 +1686,20 @@
         model: state._assistantSettings.model,
         settings: {
           temperature: state._assistantSettings.temperature,
-          topP: state._assistantSettings.topP,
-          frequencyPenalty: state._assistantSettings.frequencyPenalty,
-          presencePenalty: state._assistantSettings.presencePenalty,
+          topP: AI_CHAT_TOP_P,
           maxTokens: state._assistantSettings.maxTokens,
           contextChars: state._assistantSettings.contextChars,
           historyMessages: state._assistantSettings.historyMessages,
           maxQuestionChars: state._assistantSettings.maxQuestionChars,
-          useFallback: state._assistantSettings.useFallback,
-          accent: state._assistantSettings.accent
+          useFallback: state._assistantSettings.useFallback
         },
         context: {
           builtAt: data.builtAt,
+          ageMs: Number.isFinite(data.ts) ? Date.now() - data.ts : null,
           chars: data.context.length,
           events: data.events.length,
           posts: data.posts.length,
+          crawledPages: data.crawledPages || 0,
           preview: data.context.slice(0, 1800)
         },
         runtime: state._assistantTech,
@@ -1684,12 +1905,8 @@
       .map((item) => `${item.question || ""} ${item.answer || ""}`.trim())
       .filter(Boolean);
 
-    const htmlBlock =
-      x.htmlDigest && String(x.htmlDigest).trim()
-        ? `\nHTML/Seiten-Klartext (Auszug, gleicher Ursprung):\n${String(x.htmlDigest).trim()}`
-        : "";
-
-    return [
+    /* Strukturierte Daten zuerst — füllen den Großteil des Budgets sicher. */
+    const structured = [
       `Name: ${pickLocalized(home.heroTitle) || "KI Netzwerk Schweinfurt"}`,
       `Kurzbeschreibung: ${pickLocalized(home.heroText)}`,
       `Mission: ${pickLocalized(home.missionTitle)} - ${pickLocalized(home.missionIntro)}`,
@@ -1698,11 +1915,21 @@
       `Kontakt: ki.netzwerk.schweinfurt@gmail.com`,
       `Events: ${eventLines.join("\n- ") || "keine Events gefunden"}`,
       `Blog/Rueckblicke: ${postLines.join("\n- ") || "keine Blogbeitraege gefunden"}`,
-      `FAQ: ${faqLines.join(" | ")}`,
-      htmlBlock
-    ]
-      .join("\n")
-      .slice(0, Number(state._assistantSettings.contextChars) || 5200);
+      `FAQ: ${faqLines.join(" | ")}`
+    ].join("\n");
+
+    /* HTML-Digest des Site-Crawls füllt den Rest, ohne mitten im Wort zu schneiden. */
+    const totalBudget = Number(state._assistantSettings.contextChars) || 5200;
+    const htmlDigest = String(x.htmlDigest || "").trim();
+    const headerText = "\n\nHTML/Seiten-Klartext (Same-Origin-Crawl):\n";
+    const remaining = Math.max(0, totalBudget - structured.length - headerText.length);
+    let htmlBlock = "";
+    if (htmlDigest && remaining > 200) {
+      const fitted = htmlDigest.length > remaining ? htmlDigest.slice(0, remaining) : htmlDigest;
+      htmlBlock = `${headerText}${fitted}`;
+    }
+    const out = `${structured}${htmlBlock}`;
+    return out.length > totalBudget ? out.slice(0, totalBudget) : out;
   }
 
   function pickLocalized(value) {
@@ -1830,6 +2057,7 @@
     const padY = 9;
     const animate = () => {
       ctx.clearRect(0, 0, cssWidth, cssHeight);
+      const light = document.body.classList.contains("theme-light");
 
       points.forEach((p) => {
         p.x += p.vx;
@@ -1842,9 +2070,15 @@
         const p1 = points[a];
         const p2 = points[b];
         const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-        grad.addColorStop(0, "rgba(56,189,248,0.38)");
-        grad.addColorStop(0.5, "rgba(96,165,250,0.48)");
-        grad.addColorStop(1, "rgba(37,99,235,0.34)");
+        if (light) {
+          grad.addColorStop(0, "rgba(13,148,136,0.42)");
+          grad.addColorStop(0.5, "rgba(20,184,166,0.52)");
+          grad.addColorStop(1, "rgba(45,212,191,0.38)");
+        } else {
+          grad.addColorStop(0, "rgba(56,189,248,0.38)");
+          grad.addColorStop(0.5, "rgba(96,165,250,0.48)");
+          grad.addColorStop(1, "rgba(37,99,235,0.34)");
+        }
         ctx.strokeStyle = grad;
         ctx.lineWidth = 1.1;
         ctx.beginPath();
@@ -1861,18 +2095,18 @@
         if (packet.t > 1) packet.t = 0;
         const x = p1.x + (p2.x - p1.x) * packet.t;
         const y = p1.y + (p2.y - p1.y) * packet.t;
-        ctx.fillStyle = "rgba(14,165,233,0.92)";
+        ctx.fillStyle = light ? "rgba(13,148,136,0.9)" : "rgba(14,165,233,0.92)";
         ctx.beginPath();
         ctx.arc(x, y, 1.45, 0, Math.PI * 2);
         ctx.fill();
       });
 
       points.forEach((p) => {
-        ctx.fillStyle = "rgba(37,99,235,0.12)";
+        ctx.fillStyle = light ? "rgba(13,148,136,0.14)" : "rgba(37,99,235,0.12)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "rgba(30,64,175,0.92)";
+        ctx.fillStyle = light ? "rgba(15,118,110,0.88)" : "rgba(30,64,175,0.92)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();

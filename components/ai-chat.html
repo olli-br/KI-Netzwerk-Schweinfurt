@@ -13,7 +13,7 @@
 
   Update History:
   - 08.05.2026  [Oliver Braun]   Add local WebLLM chat assistant.
-  - 10.05.2026  [Oliver Braun]   Responsive layout, mobile/Safari, and WebLLM chat polish; browser language and system theme defaults (early head script); light-mode header and safe-area scrolling; viewport CSS variables for main height; live-on-request site context for the assistant.
+  - 10.05.2026  [Oliver Braun]   Mobile/light-mode polish, live AI context; only temperature slider, no accent setting.
 
   Independently developed by me.
   ============================================================================
@@ -72,27 +72,6 @@
           <input type="range" min="0" max="1" step="0.05" data-ai-setting="temperature" />
         </label>
         <label>
-          <span class="ai-chat-settings__field-head">
-            <span data-ai-label="settingTopP"></span>
-            <span class="ai-chat-settings__value" data-ai-value-for="topP" aria-hidden="true"></span>
-          </span>
-          <input type="range" min="0.5" max="1" step="0.02" data-ai-setting="topP" />
-        </label>
-        <label>
-          <span class="ai-chat-settings__field-head">
-            <span data-ai-label="settingFrequencyPenalty"></span>
-            <span class="ai-chat-settings__value" data-ai-value-for="frequencyPenalty" aria-hidden="true"></span>
-          </span>
-          <input type="range" min="-2" max="2" step="0.1" data-ai-setting="frequencyPenalty" />
-        </label>
-        <label>
-          <span class="ai-chat-settings__field-head">
-            <span data-ai-label="settingPresencePenalty"></span>
-            <span class="ai-chat-settings__value" data-ai-value-for="presencePenalty" aria-hidden="true"></span>
-          </span>
-          <input type="range" min="-2" max="2" step="0.1" data-ai-setting="presencePenalty" />
-        </label>
-        <label>
           <span data-ai-label="settingMaxTokens"></span>
           <input type="number" min="120" max="1536" step="20" data-ai-setting="maxTokens" />
         </label>
@@ -114,10 +93,6 @@
             <option value="indexeddb" data-ai-label="cacheBackendIndexeddb"></option>
             <option value="cache" data-ai-label="cacheBackendCache"></option>
           </select>
-        </label>
-        <label class="ai-chat-settings__field--accent">
-          <span data-ai-label="settingAccent"></span>
-          <input type="color" data-ai-setting="accent" />
         </label>
       </div>
       <div class="ai-chat-model-info" data-ai-model-info></div>

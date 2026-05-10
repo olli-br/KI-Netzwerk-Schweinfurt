@@ -150,7 +150,7 @@ KI-Netzwerk-Schweinfurt-main/
 | Bereich | Pfad | Zweck |
 |--------|------|--------|
 | **Globale UI-Strings** | `data/global/global.json` | Navigation, Footer, FAQ-Texte, Theme-Labels, Common (Buttons, Loading…), Countdown |
-| **KI-Chat / WebLLM** | `data/global/ai-chat.json` | Modell-Katalog (`models`), ES-Import-URLs (`webLlmModuleUrls`), Standardeinstellungen (`defaultSettings`), alle Chat-Strings DE/EN (`labels`) |
+| **KI-Chat / WebLLM** | `data/global/ai-chat.json` | Modell-Katalog (`models`), ES-Import-URLs (`webLlmModuleUrls`), Standardeinstellungen (`defaultSettings`), alle Chat-Strings DE/EN (`labels`); HTML-Kontext per internem Link-Crawl (keine Seitenliste in der JSON) |
 | **Startseite** | `data/home/home-page.json` | Hero, Sektions-Eyebrows, Mission-Features, Sponsoren-Liste, CTA |
 | **Über uns** | `data/about/about-page.json` | Hero, Treffenbeschreibung, Teilnehmer- & Partner-Chips, Partner-Logos, Initiatoren mit Bio |
 | **Event-Liste** | `data/event/index.json` | Reihenfolge & Auswahl der angezeigten Events (`files: [...]`) |
@@ -386,9 +386,9 @@ Die Website bindet einen **schwebenden Chat** ein (Partial `components/ai-chat.h
 
 ### Ablauf in Kurzform
 
-1. **`data/global/ai-chat.json`** wird mit den übrigen globalen Daten geladen: Labels (DE/EN), Liste der Modell-IDs (`models`), Standardwerte für Temperatur, Token-Länge, Kontextgröße usw. (`defaultSettings`), **`webLlmModuleUrls`**, sowie optional **`contextHtmlPages`** (relative Pfade zu HTML-Seiten, deren Klartext-Auszug in den Kontext einfließt).
+1. **`data/global/ai-chat.json`** wird mit den übrigen globalen Daten geladen: Labels (DE/EN), Liste der Modell-IDs (`models`), Standardwerte für Temperatur, Token-Länge, Kontextgröße usw. (`defaultSettings`) und **`webLlmModuleUrls`**.
 2. Beim ersten Senden einer Nachricht importiert der Code dynamisch das WebLLM-Modul (`importWebLlmModule` in `assets/js/main.js`), erzeugt eine **`MLCEngine`** mit dem gewählten Modell und dem Cache-Backend (**IndexedDB** oder **Cache API**, wählbar in den Chat-Einstellungen).
-3. **Website-Kontext (live, gleicher Ursprung):** Unmittelbar **vor jeder Nutzerfrage** lädt der Browser die aktuellen Inhalte per **`fetch` mit `cache: no-store`** neu: `home-page.json`, `global.json`, Event- und Blog-Index samt Einzeldateien inkl. Markdown-Verweise, plus die in **`contextHtmlPages`** konfigurierten **HTML-Seiten** (Auszug aus `<main>` bzw. `<body>` als Klartext). Daraus baut `buildAiAssistantContext` den Text für den **System-Prompt** — begrenzt durch **`contextChars`**. Es gibt **keinen** festen Kontext-Cache über mehrere Fragen hinweg; fremde Domains können im rein statischen Setup aus dem Browser heraus nicht „crawlt“ werden (Same-Origin).
+3. **Website-Kontext (live, gleicher Ursprung):** Unmittelbar **vor jeder Nutzerfrage** lädt der Browser die aktuellen Inhalte per **`fetch` mit `cache: no-store`** neu: `home-page.json`, `global.json`, Event- und Blog-Index samt Einzeldateien inkl. Markdown-Verweise. **HTML:** Ein kleiner **Same-Origin-Link-Crawl** startet bei `./index.html` (und der aktuellen Seite, falls `.html`), folgt internen `<a href>`-Zielen zu weiteren `.html`-Seiten derselben Website (ohne feste Liste) und hängt **gekürzten Klartext** aus `<main>` (bzw. `<body>`) an. Daraus baut `buildAiAssistantContext` den Text für den **System-Prompt** — begrenzt durch **`contextChars`**. Es gibt **keinen** festen Kontext-Cache über mehrere Fragen hinweg; fremde Domains können im rein statischen Setup aus dem Browser heraus nicht eingebunden werden.
 4. **Antwort:** Es wird mit Streaming gearbeitet (bei Fehler einmaliger Versuch ohne Stream). **Abbrechen** unterbricht die Generierung (`interruptGenerate`).
 
 ### Fallback ohne funktionierendes WebLLM
@@ -405,11 +405,11 @@ Das ist keine semantische Vektorsuche, sondern ein **leichgewichtiger Scanner** 
 
 | Thema | Ort / Verhalten |
 |--------|-------------------|
-| **Persistenz** | `localStorage`-Schlüssel `kins-ai-chat-settings` (Modell, Schieberegler, Checkboxen, Akzentfarbe) |
+| **Persistenz** | `localStorage`-Schlüssel `kins-ai-chat-settings` (Modell, Schieberegler, Checkboxen) |
 | **Texte / Modelle / CDNs** | `data/global/ai-chat.json` — `_meta` wie bei anderen JSONs; Änderungen an `labels`, `models`, `webLlmModuleUrls`, `defaultSettings` |
 | **Zuverlässigkeit** | Aktuellen **Chrome-, Edge- oder Safari** mit WebGPU über **HTTPS** oder **localhost** verwenden (siehe Hinweistexte in `labels`); bei Cache-Problemen **IndexedDB** als Cache-Speicher wählen |
 
-**Dateien:** `components/ai-chat.html` (Markup), Styles in `assets/css/styles.css` (Klassen `ai-chat*`), gesamte Logik in `assets/js/main.js` (Funktionen `initAiChatAssistant`, `ensureAiAssistantEngine`, `buildAiAssistantContext`, `buildLocalContextFallbackAnswer`, …).
+**Dateien:** `components/ai-chat.html` (Markup), Styles in `assets/css/styles.css` (Klassen `ai-chat*`), gesamte Logik in `assets/js/main.js` (Funktionen `initAiChatAssistant`, `ensureAiAssistantEngine`, `crawlSiteHtmlPagesForAiDigest`, `buildAiAssistantContext`, `buildLocalContextFallbackAnswer`, …).
 
 ---
 

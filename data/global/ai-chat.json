@@ -24,34 +24,44 @@
         "date": "10.05.2026",
         "author": "Oliver Braun",
         "change": "KI-Kontext: vor jeder Antwort frisch per HTTP (JSON, Events/Blog, HTML-Auszüge); contextHtmlPages."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "Einstellungen: nur Temperatur-Regler; Top-P fest aus defaultSettings; Straf-Parameter ohne UI."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "HTML-Kontext: Same-Origin-Link-Crawl statt fester contextHtmlPages-Liste."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "KI-Chat: Akzentfarben-Einstellung entfernt."
+      },
+      {
+        "date": "10.05.2026",
+        "author": "Oliver Braun",
+        "change": "Crawler: parallel + Session-TTL-Cache; Top-P/Strafen aus defaultSettings entfernt (Konstanten im Code)."
       }
     ]
   },
   "defaultSettings": {
     "model": "SmolLM2-135M-Instruct-q0f16-MLC",
     "temperature": 0.35,
-    "topP": 0.92,
-    "frequencyPenalty": 0,
-    "presencePenalty": 0,
     "maxTokens": 320,
     "contextChars": 5200,
-    "historyMessages": 8,
+    "historyMessages": 6,
     "maxQuestionChars": 700,
     "cacheBackend": "indexeddb",
     "useFallback": true,
     "showTech": false,
-    "showDebugData": false,
-    "accent": "#14b8a6"
+    "showDebugData": false
   },
   "webLlmModuleUrls": [
     "https://esm.run/@mlc-ai/web-llm",
     "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm"
-  ],
-  "contextHtmlPages": [
-    "./index.html",
-    "./events.html",
-    "./blog.html",
-    "./about.html"
   ],
   "models": [
     {
@@ -174,7 +184,6 @@
       "settingPresencePenalty": "Themen-Strafe",
       "settingHistoryMessages": "Chat-Verlauf (Nachrichten)",
       "settingMaxQuestionChars": "Max. Fragenlänge",
-      "settingAccent": "Akzentfarbe",
       "settingCacheBackend": "Cache-Speicher",
       "cacheBackendIndexeddb": "IndexedDB (empfohlen bei Cache-Fehlern)",
       "cacheBackendCache": "Browser Cache API",
@@ -231,7 +240,7 @@
       "inactive": "aus",
       "contextNotLoaded": "noch nicht geladen",
       "contextLoaded": "geladen",
-      "systemContextLive": "Der folgende Website-Kontext wurde soeben per HTTP von dieser Installation geladen (JSON, Event-/Blog-Dateien und gekürzter Klartext aus den HTML-Seiten in contextHtmlPages). Er steht nicht fest im Modell."
+      "systemContextLive": "Der folgende Website-Kontext wurde soeben per HTTP von dieser Installation geladen (JSON, Event-/Blog-Dateien und gekürzter Klartext aus verlinkten HTML-Seiten derselben Website, automatisch per internem Link-Crawl). Er steht nicht fest im Modell."
     },
     "en": {
       "button": "Open assistant",
@@ -250,7 +259,6 @@
       "settingHistoryMessages": "Chat history (messages)",
       "settingMaxQuestionChars": "Max. question length",
       "settingCacheBackend": "Cache storage",
-      "settingAccent": "Accent color",
       "cacheBackendIndexeddb": "IndexedDB (recommended for cache errors)",
       "cacheBackendCache": "Browser Cache API",
       "useFallback": "Use local fallback",
@@ -306,7 +314,7 @@
       "inactive": "off",
       "contextNotLoaded": "not loaded yet",
       "contextLoaded": "loaded",
-      "systemContextLive": "The website context below was just fetched over HTTP from this deployment (JSON, event and blog files, and trimmed plain text from the HTML pages listed in contextHtmlPages). It is not baked into the model weights."
+      "systemContextLive": "The website context below was just fetched over HTTP from this deployment (JSON, event and blog files, and trimmed plain text from same-site HTML pages discovered via internal links). It is not baked into the model weights."
     }
   }
 }
